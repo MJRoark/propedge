@@ -1,0 +1,4513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PropEdge Quant — Prop Firm EV &amp; Optimal Sizing Engine</title>
+  <style>
+    /* =========================================================================
+       PROPEDGE QUANT — INSTITUTIONAL DARK TERMINAL DESIGN SYSTEM
+       100% Self-Contained CSS (Zero External CDN Dependencies)
+       ========================================================================= */
+    :root {
+      --bg-base: #060a12;
+      --bg-surface: #0d1424;
+      --bg-elevated: #131d33;
+      --bg-input: #080e1a;
+      --border-subtle: #1e293b;
+      --border-strong: #334155;
+
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.13);
+      --emerald-border: rgba(16, 185, 129, 0.38);
+
+      --cyan: #06b6d4;
+      --cyan-bg: rgba(6, 182, 212, 0.13);
+      --cyan-border: rgba(6, 182, 212, 0.42);
+
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.13);
+      --amber-border: rgba(245, 158, 11, 0.4);
+
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.13);
+      --rose-border: rgba(244, 63, 94, 0.4);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --header-h: 68px;
+      --sidebar-w: 368px;
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --t-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.45;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .text-emerald { color: var(--emerald) !important; }
+    .text-cyan { color: var(--cyan) !important; }
+    .text-amber { color: var(--amber) !important; }
+    .text-rose { color: var(--rose) !important; }
+    .text-secondary { color: var(--text-secondary) !important; }
+    .text-muted { color: var(--text-muted) !important; }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: #26354d; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b4f6e; }
+
+    /* =========================================================================
+       FIXED TOP HEADER BAR
+       ========================================================================= */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 13, 24, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .sidebar-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--t-fast);
+      flex-shrink: 0;
+    }
+    .sidebar-toggle-btn:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(6, 182, 212, 0.2));
+      border: 1px solid var(--cyan-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.18);
+    }
+
+    .brand-text h1 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.15;
+    }
+    .brand-text h1 span.accent { color: var(--cyan); }
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+
+    .preset-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-pill {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      border-radius: 99px;
+      padding: 6px 11px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .preset-pill:hover {
+      border-color: var(--cyan-border);
+      color: var(--text-primary);
+    }
+    .preset-pill.active {
+      background: var(--cyan-bg);
+      border-color: var(--cyan);
+      color: #ecfeff;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.18);
+    }
+    .preset-chip {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.16);
+      color: var(--emerald);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: var(--radius-sm);
+      font-size: 0.79rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      transition: all var(--t-fast);
+      white-space: nowrap;
+      user-select: none;
+    }
+    .btn:hover {
+      border-color: var(--cyan);
+      background: #1a2742;
+      transform: translateY(-1px);
+    }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #059669, #0891b2);
+      border-color: rgba(52, 211, 153, 0.55);
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.25);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-color: #6ee7b7;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-emerald {
+      background: var(--emerald-bg);
+      border-color: var(--emerald-border);
+      color: var(--emerald);
+    }
+    .btn-emerald:hover {
+      background: rgba(16, 185, 129, 0.24);
+      border-color: var(--emerald);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--cyan-border);
+      background: rgba(6, 182, 212, 0.08);
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 0.74rem;
+    }
+
+    /* =========================================================================
+       LAYOUT SHELL: COLLAPSIBLE SIDEBAR + MAIN WORKSPACE
+       ========================================================================= */
+    .app-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      min-height: calc(100vh - var(--header-h));
+      transition: grid-template-columns 200ms ease;
+    }
+    .app-layout.sidebar-collapsed {
+      grid-template-columns: 0px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: calc(100vh - var(--header-h));
+      position: sticky;
+      top: var(--header-h);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: opacity 180ms ease;
+    }
+    .app-layout.sidebar-collapsed .sidebar {
+      opacity: 0;
+      padding: 0;
+      border-right: none;
+      pointer-events: none;
+    }
+
+    .workspace-main {
+      padding: 16px 20px 44px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* =========================================================================
+       SIDEBAR ACCORDIONS & FORM CONTROLS
+       ========================================================================= */
+    .accordion {
+      background: rgba(8, 14, 26, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .acc-header {
+      width: 100%;
+      background: rgba(19, 29, 51, 0.75);
+      border: none;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: background var(--t-fast);
+    }
+    .acc-header:hover { background: rgba(30, 41, 59, 0.8); }
+    .acc-header-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--cyan);
+    }
+    .acc-chevron {
+      color: var(--text-muted);
+      transition: transform 180ms ease;
+      font-size: 0.75rem;
+    }
+    .accordion.open .acc-chevron { transform: rotate(180deg); }
+
+    .acc-body {
+      display: none;
+      padding: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .accordion.open .acc-body { display: block; }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .field-full { grid-column: 1 / -1; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .label-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-prefix, .input-suffix {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .input-prefix { left: 9px; }
+    .input-suffix { right: 9px; }
+
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 7px 9px;
+      outline: none;
+      transition: border-color var(--t-fast), box-shadow var(--t-fast);
+    }
+    select {
+      font-family: var(--font-sans);
+      font-size: 0.79rem;
+      cursor: pointer;
+    }
+    input.has-prefix { padding-left: 20px; }
+    input.has-suffix { padding-right: 24px; }
+    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 99px;
+      background: #1e293b;
+      outline: none;
+      cursor: pointer;
+      margin: 4px 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--cyan);
+      border: 2px solid var(--bg-base);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+      cursor: pointer;
+    }
+
+    /* Toggle Switch */
+    .switch-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+    }
+    .switch-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .switch-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: #273549;
+      border-radius: 99px;
+      transition: background 180ms ease;
+    }
+    .switch-track::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 180ms ease;
+    }
+    .switch input:checked + .switch-track { background: var(--emerald); }
+    .switch input:checked + .switch-track::before { transform: translateX(16px); }
+
+    /* Live Strategy Expectancy Card in Sidebar */
+    .live-edge-banner {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.08));
+      border: 1px solid var(--cyan-border);
+      border-radius: var(--radius-sm);
+      padding: 9px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .live-edge-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .live-edge-vals {
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    /* =========================================================================
+       INTERACTIVE VIEWPORT-AWARE TOOLTIP COMPONENT (?)
+       ========================================================================= */
+    .tip-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: help;
+      padding: 0;
+      transition: all var(--t-fast);
+      vertical-align: middle;
+    }
+    .tip-btn:hover, .tip-btn:focus, .tip-btn.active {
+      background: var(--cyan-bg);
+      border-color: var(--cyan);
+      color: #ecfeff;
+      outline: none;
+    }
+
+    #globalTooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 310px;
+      width: max-content;
+      background: rgba(6, 11, 22, 0.98);
+      border: 1px solid var(--cyan-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.78);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 130ms ease, transform 130ms ease;
+    }
+    #globalTooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #globalTooltip .tt-title {
+      font-size: 0.77rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    #globalTooltip .tt-body {
+      font-size: 0.74rem;
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+    #globalTooltip .tt-example {
+      margin-top: 6px;
+      padding-top: 5px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.71rem;
+      color: var(--amber);
+      line-height: 1.4;
+    }
+
+    /* =========================================================================
+       WORKSPACE NAVIGATION TABS
+       ========================================================================= */
+    .workspace-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 5px;
+      overflow-x: auto;
+    }
+
+    .ws-tab {
+      flex: 1 0 auto;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .ws-tab:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .ws-tab.active {
+      background: var(--bg-elevated);
+      border-color: var(--cyan-border);
+      color: #ecfeff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    }
+    .ws-tab-num {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(6, 182, 212, 0.14);
+      color: var(--cyan);
+    }
+
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tab-pane.active { display: flex; }
+
+    /* =========================================================================
+       CARDS, KPI STRIP & COMPLIANCE ALERTS
+       ========================================================================= */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-sub {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--kpi-color, var(--cyan));
+    }
+    .kpi-card.pos { --kpi-color: var(--emerald); }
+    .kpi-card.neg { --kpi-color: var(--rose); }
+    .kpi-card.info { --kpi-color: var(--cyan); }
+    .kpi-card.warn { --kpi-color: var(--amber); }
+
+    .kpi-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .kpi-val {
+      font-family: var(--font-mono);
+      font-size: 1.32rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .kpi-foot {
+      font-size: 0.71rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    /* Compliance Alert Strip */
+    .alerts-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .alert-pill {
+      flex: 1 1 300px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px 13px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      border: 1px solid transparent;
+    }
+    .alert-pill.error { background: var(--rose-bg); border-color: var(--rose-border); color: #fecdd3; }
+    .alert-pill.warn { background: var(--amber-bg); border-color: var(--amber-border); color: #fde68a; }
+    .alert-pill.ok { background: var(--emerald-bg); border-color: var(--emerald-border); color: #a7f3d0; }
+    .alert-pill.info { background: var(--cyan-bg); border-color: var(--cyan-border); color: #cffafe; }
+    .alert-icon { font-size: 0.95rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* Two-column visual grid */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 16px;
+    }
+
+    .canvas-shell {
+      background: #070c16;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      width: 100%;
+    }
+    .canvas-shell canvas {
+      display: block;
+      width: 100%;
+    }
+
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 9px;
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+    }
+    .dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    /* Quant Verdict Card */
+    .verdict-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.07), rgba(6, 182, 212, 0.06));
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--emerald);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .verdict-box.neg {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.08), rgba(15, 23, 42, 0.4));
+      border-left-color: var(--rose);
+    }
+    .verdict-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .verdict-body {
+      font-size: 0.81rem;
+      color: #cbd5e1;
+      line-height: 1.55;
+    }
+
+    /* Segmented Controls */
+    .seg-group {
+      display: inline-flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 3px;
+    }
+    .seg-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all var(--t-fast);
+      white-space: nowrap;
+    }
+    .seg-btn.active {
+      background: var(--bg-elevated);
+      color: var(--cyan);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    }
+
+    /* =========================================================================
+       TAB 2: 2D HEATMAP OPTIMIZER
+       ========================================================================= */
+    .heatmap-scroll {
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .heatmap-table {
+      display: grid;
+      gap: 4px;
+      min-width: 680px;
+      user-select: none;
+    }
+    .hm-hdr {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 6px 4px;
+    }
+    .hm-row-lbl {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding-right: 8px;
+      line-height: 1.15;
+    }
+    .hm-row-lbl small {
+      font-size: 0.63rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .hm-cell {
+      border-radius: 7px;
+      min-height: 50px;
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      position: relative;
+      transition: transform 110ms ease, border-color 110ms ease;
+    }
+    .hm-cell:hover {
+      transform: scale(1.06);
+      z-index: 6;
+      border-color: #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+    }
+    .hm-cell.optimal {
+      border: 2px solid #34d399;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(52, 211, 153, 0.25);
+      z-index: 4;
+    }
+    .hm-cell.optimal::after {
+      content: "★";
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 0.65rem;
+      color: #fde047;
+    }
+    .hm-cell.current {
+      outline: 2px dashed var(--cyan);
+      outline-offset: -3px;
+    }
+    .hm-cell.locked {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(244, 63, 94, 0.16),
+        rgba(244, 63, 94, 0.16) 5px,
+        rgba(13, 20, 36, 0.85) 5px,
+        rgba(13, 20, 36, 0.85) 10px
+      ) !important;
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+      cursor: not-allowed;
+    }
+    .hm-v {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .hm-s {
+      font-family: var(--font-mono);
+      font-size: 0.63rem;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .opt-summary-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.08));
+      border: 1px solid var(--emerald-border);
+      border-radius: var(--radius-md);
+      padding: 15px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .opt-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .opt-item-lbl {
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald);
+      margin-bottom: 3px;
+    }
+    .opt-item-val {
+      font-family: var(--font-mono);
+      font-size: 1.02rem;
+      font-weight: 800;
+    }
+    .opt-item-sub {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* =========================================================================
+       TAB 3: MONTE CARLO PLAYBACK & LOG
+       ========================================================================= */
+    .quick-compare-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 13px;
+      background: rgba(6, 182, 212, 0.06);
+      border: 1px solid var(--cyan-border);
+      border-radius: var(--radius-md);
+    }
+    .qc-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .qc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border-radius: 99px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t-fast);
+    }
+    .qc-pill:hover { border-color: var(--cyan); }
+    .qc-pill.active-emerald {
+      background: var(--emerald-bg);
+      border-color: var(--emerald);
+      color: #a7f3d0;
+    }
+    .qc-pill.active-amber {
+      background: var(--amber-bg);
+      border-color: var(--amber);
+      color: #fde68a;
+    }
+
+    .playback-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+
+    .trade-log-wrap {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+    }
+    .quant-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.77rem;
+    }
+    .quant-table th, .quant-table td {
+      padding: 8px 11px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .quant-table th {
+      position: sticky;
+      top: 0;
+      background: #0e1628;
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      z-index: 2;
+    }
+    .quant-table td.num, .quant-table th.num {
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+    .quant-table tr.active-row {
+      background: rgba(6, 182, 212, 0.14);
+    }
+
+    /* =========================================================================
+       TAB 4: COPY TRADING STRESS TEST
+       ========================================================================= */
+    .stress-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      align-items: end;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 13px;
+    }
+
+    .strategy-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .strat-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 3px solid var(--border-strong);
+    }
+    .strat-card.amber { border-top-color: var(--amber); }
+    .strat-card.rose { border-top-color: var(--rose); }
+    .strat-card.emerald { border-top-color: var(--emerald); }
+    .strat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.77rem;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.12);
+    }
+    .strat-row:last-child { border-bottom: none; }
+
+    /* =========================================================================
+       TAB 5: BUILT-IN GUIDE & MATH MANUAL
+       ========================================================================= */
+    .playbook-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .step-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--cyan-bg);
+      border: 1px solid var(--cyan-border);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.76rem;
+    }
+    .step-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .step-card p { font-size: 0.74rem; color: var(--text-secondary); line-height: 1.45; }
+
+    .math-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .math-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .math-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .math-card p {
+      font-size: 0.77rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+    .formula-pill {
+      background: #050911;
+      border: 1px solid var(--cyan-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--emerald);
+      text-align: center;
+    }
+
+    .glossary-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .glossary-table-wrap {
+      max-height: 360px;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+    }
+
+    /* Toast Notification */
+    #toastHost {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 9500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: #0d1629;
+      border: 1px solid var(--emerald-border);
+      color: var(--text-primary);
+      padding: 10px 15px;
+      border-radius: var(--radius-sm);
+      font-size: 0.79rem;
+      font-weight: 600;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+      animation: fadeSlideUp 180ms ease-out;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================= */
+    @media (max-width: 1280px) {
+      .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .playbook-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 1024px) {
+      .app-layout { grid-template-columns: 1fr; }
+      .app-layout.sidebar-collapsed { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .app-layout.sidebar-collapsed .sidebar {
+        display: none;
+      }
+      .two-col-grid { grid-template-columns: 1fr; }
+      .strategy-cards { grid-template-columns: 1fr; }
+      .stress-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .math-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .top-header { padding: 10px 12px; }
+      .workspace-main { padding: 12px 10px 36px; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi-val { font-size: 1.12rem; }
+      .playbook-grid { grid-template-columns: 1fr; }
+      .stress-controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- =========================================================================
+       FIXED TOP HEADER BAR
+       ========================================================================= -->
+  <header class="top-header">
+    <div class="brand-cluster">
+      <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Inputs Sidebar" title="Toggle Inputs Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="brand-logo" aria-hidden="true">
+        <!-- Custom Crisp Geometric SVG Logo Mark -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <polygon points="12,2 21,7 21,17 12,22 3,17 3,7" stroke="#06b6d4" stroke-width="1.75" fill="rgba(6,182,212,0.08)"/>
+          <polyline points="6.5,14.5 10.2,11 13.3,13.5 17.8,8" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="17.8" cy="8" r="1.8" fill="#10b981"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>PropEdge <span class="accent">Quant</span></h1>
+        <div class="brand-sub">Prop Firm EV &amp; Optimal Sizing Engine</div>
+      </div>
+    </div>
+
+    <div class="preset-strip" id="presetStrip" role="group" aria-label="2026 Prop Firm Presets">
+      <button type="button" class="preset-pill active" data-preset="apexLegacy">
+        Apex 50K Legacy <span class="preset-chip">$10 Promo</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="apexEod">
+        Apex 50K EOD <span class="preset-chip">2026</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="topstep">
+        Topstep 50K <span class="preset-chip">Combine/XFA</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="mffu">
+        MFFU 50K <span class="preset-chip">Builder</span>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn btn-ghost" id="openGuideBtn">
+        <span class="mono" style="color:var(--cyan);font-weight:800;">?</span> Guide &amp; Math
+      </button>
+      <button type="button" class="btn btn-primary" id="runSimBtn">
+        <span>&#9889;</span> Run Simulation
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN SHELL: COLLAPSIBLE LEFT SIDEBAR + 5-TAB WORKSPACE
+       ========================================================================= -->
+  <div class="app-layout" id="appLayout">
+    <!-- COLLAPSIBLE LEFT SIDEBAR (5 ACCORDIONS) -->
+    <aside class="sidebar" id="sidebar" aria-label="Simulation Configuration Inputs">
+
+      <!-- ACCORDION 1: FEES & LIFECYCLE -->
+      <div class="accordion open">
+        <button type="button" class="acc-header">
+          <span class="acc-header-left"><span>01</span> Fees &amp; Lifecycle</span>
+          <span class="acc-chevron">&#9662;</span>
+        </button>
+        <div class="acc-body">
+          <div class="field-grid">
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Eval Cost
+                  <button type="button" class="tip-btn" data-tip-title="Evaluation Fee ($)" data-tip="Out-of-pocket cost for each evaluation challenge attempt. Directly scales your expected cost to reach a funded account via (Eval Cost ÷ Pass Rate)." data-tip-ex="Example: Apex $10 promo cuts evaluation burn by 90% vs. $100 regular pricing, turning marginal setups strongly +EV.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="evalFee" class="has-prefix" min="0" max="5000" step="1" value="10" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Activation Fee
+                  <button type="button" class="tip-btn" data-tip-title="Funded Activation Fee ($)" data-tip="One-time PA/XFA activation fee charged only after passing an evaluation. Adds a fixed cost to every funded lifecycle." data-tip-ex="Example: $75 on Apex Legacy promo, $149 on Topstep XFA, $0 on MyFundedFutures Builder.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="activationFee" class="has-prefix" min="0" max="5000" step="1" value="75" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Payout Split
+                  <button type="button" class="tip-btn" data-tip-title="Trader Profit Split (%)" data-tip="Percentage of each approved withdrawal you keep as real cash." data-tip-ex="Example: Apex pays 100% on the first $25,000 per account; Topstep pays 90%; MFFU Builder pays 80%.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="payoutSplit" class="has-suffix" min="50" max="100" step="5" value="100" />
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Max Payout Cap
+                  <button type="button" class="tip-btn" data-tip-title="Max Payout Cap ($)" data-tip="Maximum gross withdrawal allowed per payout cycle. Caps the right-tail payoff of your call option." data-tip-ex="Example: $2,000 max per payout on most 50K accounts for payouts 1–3.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="maxPayout" class="has-prefix" min="100" max="25000" step="100" value="2000" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Payout Cycles
+                  <button type="button" class="tip-btn" data-tip-title="Max Payout Cycles Modeled (1–6)" data-tip="How many sequential withdrawals a surviving funded account can collect before cycling out or transitioning to live." data-tip-ex="Example: Setting 1 tests strict 1st-payout EV; setting 3–6 captures the compounding value of accounts whose trailing floor is already locked.">?</button>
+                </span>
+                <span class="mono text-cyan" id="maxPayoutsVal">3</span>
+              </div>
+              <input type="range" id="maxPayouts" min="1" max="6" step="1" value="3" />
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Simulations
+                  <button type="button" class="tip-btn" data-tip-title="Monte Carlo Runs (1,000–5,000)" data-tip="Number of independent full lifecycle paths simulated per run. Higher counts reduce sampling noise at a slight speed cost." data-tip-ex="Example: 2,000 runs gives ~1% precision in milliseconds; bump to 5,000 for final bankroll checks.">?</button>
+                </span>
+                <span class="mono text-cyan" id="simCountVal">2,000</span>
+              </div>
+              <input type="range" id="simCount" min="1000" max="5000" step="500" value="2000" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION 2: EVALUATION RULES -->
+      <div class="accordion open">
+        <button type="button" class="acc-header">
+          <span class="acc-header-left"><span>02</span> Evaluation Rules</span>
+          <span class="acc-chevron">&#9662;</span>
+        </button>
+        <div class="acc-body">
+          <div class="field-grid">
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Profit Target
+                  <button type="button" class="tip-btn" data-tip-title="Eval Profit Target ($)" data-tip="Total closed profit required to pass the evaluation. Higher T/D ratios exponentially reduce pass probability." data-tip-ex="Example: $3,000 on a $50K account. With a $2,500 DD, T/D = 1.20.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="evalTarget" class="has-prefix" min="100" max="50000" step="100" value="3000" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Max Drawdown
+                  <button type="button" class="tip-btn" data-tip-title="Eval Max Drawdown ($)" data-tip="Maximum loss cushion before the evaluation blows up. Determines your survival runway and optimal bet size." data-tip-ex="Example: $2,500 on Apex Legacy 50K; $2,000 on Apex EOD, Topstep, and MFFU 50K.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="evalDD" class="has-prefix" min="100" max="50000" step="100" value="2500" />
+              </div>
+            </div>
+            <div class="field field-full">
+              <div class="field-label">
+                <span class="label-text">Eval Drawdown Type
+                  <button type="button" class="tip-btn" data-tip-title="Intraday vs. End-of-Day Trailing DD" data-tip="Intraday Unrealized Trailing ratchets your bust floor upward on open-trade unrealized peaks—meaning a wick that pulls back permanently eats your buffer. EOD Trailing only updates at market close." data-tip-ex="Example: On Intraday DD, running +$700 open then stopping at -$500 burns $1,200 of buffer. On EOD DD, it only burns $500.">?</button>
+                </span>
+              </div>
+              <select id="evalDDType">
+                <option value="intraday">Intraday Unrealized Trailing</option>
+                <option value="eod">End-of-Day (EOD) Trailing</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Daily Loss Limit
+                  <button type="button" class="tip-btn" data-tip-title="Daily Loss Limit ($, 0 = None)" data-tip="Hard daily loss cap during evaluation. Halts trading for the day (or violates if a single stop exceeds it). Set 0 if no DLL." data-tip-ex="Example: $1,000 DLL on Topstep and Apex EOD locks out single-trade risks above $1,000.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="evalDLL" class="has-prefix" min="0" max="20000" step="50" value="0" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Eval Consistency
+                  <button type="button" class="tip-btn" data-tip-title="Eval Consistency Cap (%, 0 = None)" data-tip="Maximum percentage of total eval profit allowed in a single day. Formula: Required Profit = Best Day ÷ Consistency%. Set 0% for 1-day pass allowance." data-tip-ex="Example: At 50% consistency on a $3,000 target, making $2,000 in one day inflates your required target to $2,000 ÷ 0.50 = $4,000.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="evalConsistency" class="has-suffix" min="0" max="100" step="5" value="0" />
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="field field-full">
+              <div class="field-label">
+                <span class="label-text">Min Eval Trading Days
+                  <button type="button" class="tip-btn" data-tip-title="Minimum Eval Trading Days" data-tip="Minimum separate calendar days required to pass the evaluation." data-tip-ex="Example: 1 allows Apex's 1-day pass; 2 requires at least two sessions (e.g., Topstep 50K).">?</button>
+                </span>
+              </div>
+              <input type="number" id="evalMinDays" min="1" max="30" step="1" value="1" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION 3: FUNDED RULES -->
+      <div class="accordion open">
+        <button type="button" class="acc-header">
+          <span class="acc-header-left"><span>03</span> Funded &amp; Payout Rules</span>
+          <span class="acc-chevron">&#9662;</span>
+        </button>
+        <div class="acc-body">
+          <div class="field-grid">
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Funded Max DD
+                  <button type="button" class="tip-btn" data-tip-title="Funded Drawdown ($)" data-tip="Starting drawdown cushion once activated as a funded PA/XFA account." data-tip-ex="Example: $2,500 on Apex Legacy 50K; $2,000 on Apex EOD, Topstep, and MFFU.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="fundedDD" class="has-prefix" min="100" max="50000" step="100" value="2500" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Safety Net Lock
+                  <button type="button" class="tip-btn" data-tip-title="Safety Net Lock Threshold ($)" data-tip="Profit level where the trailing drawdown permanently stops moving. Set 0 for 50%-balance withdrawal firms like Topstep (where floor locks at $0 after 1st payout)." data-tip-ex="Example: $2,600 on Apex Legacy 50K locks your liquidation floor permanently at $50,100 (+$100).">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="safetyNet" class="has-prefix" min="0" max="50000" step="100" value="2600" />
+              </div>
+            </div>
+            <div class="field field-full">
+              <div class="field-label">
+                <span class="label-text">Funded DD Type
+                  <button type="button" class="tip-btn" data-tip-title="Funded Drawdown Type" data-tip="Whether the funded account tracks unrealized intraday peaks (Intraday Trailing) or closed daily balances (EOD Trailing) before the Safety Net locks." data-tip-ex="Example: Switching from Intraday to EOD is often the single highest-EV structural upgrade for M1 reversal traders.">?</button>
+                </span>
+              </div>
+              <select id="fundedDDType">
+                <option value="intraday">Intraday Unrealized Trailing</option>
+                <option value="eod">End-of-Day (EOD) Trailing</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Funded Consist.
+                  <button type="button" class="tip-btn" data-tip-title="Funded Consistency Cap (%, 0 = None)" data-tip="Maximum % of cycle profit allowed from your single best day when requesting a payout. Formula: Required Profit = Best Day ÷ Consistency%." data-tip-ex="Example: On Apex Legacy (30%), one $1,500 win forces $1,500 ÷ 0.30 = $5,000 total profit before payout. Capping days at $750 keeps you compliant.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="fundedConsistency" class="has-suffix" min="0" max="100" step="5" value="30" />
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">MAE Loss Cap
+                  <button type="button" class="tip-btn" data-tip-title="MAE Single-Trade Loss Cap ($, 0 = None)" data-tip="Maximum open-trade negative P&L (Maximum Adverse Excursion) allowed on any single trade before locking the safety net. Breaching this risks payout denial." data-tip-ex="Example: Apex Legacy enforces a 30% MAE rule on a $2,500 DD = $750 hard cap per trade. Risking $500 leaves a $250 slippage cushion.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="maeCap" class="has-prefix" min="0" max="10000" step="50" value="750" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Min Qual. Days
+                  <button type="button" class="tip-btn" data-tip-title="Minimum Qualifying Days" data-tip="Minimum separate trading days (with qualifying winning days) required per payout cycle." data-tip-ex="Example: Apex Legacy requires 8 trading days (with 5 days >= $50); Apex EOD & Topstep require 5 winning days.">?</button>
+                </span>
+              </div>
+              <input type="number" id="fundedMinDays" min="1" max="30" step="1" value="8" />
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Min Day Profit
+                  <button type="button" class="tip-btn" data-tip-title="Min Profit per Qualifying Day ($)" data-tip="Minimum closed daily profit needed for a session to count as a winning qualifying day." data-tip-ex="Example: $50 on Apex Legacy, $250 on Apex EOD, $150 on Topstep Standard XFA.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="minQualProfit" class="has-prefix" min="0" max="2000" step="25" value="50" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION 4: STRATEGY & SIZING -->
+      <div class="accordion open">
+        <button type="button" class="acc-header">
+          <span class="acc-header-left"><span>04</span> Strategy &amp; Sizing</span>
+          <span class="acc-chevron">&#9662;</span>
+        </button>
+        <div class="acc-body">
+          <div class="field-grid">
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Baseline WR
+                  <button type="button" class="tip-btn" data-tip-title="Baseline Win Rate (%)" data-tip="Your true journaled win rate at your Baseline R:R before commissions. Use 40% at 1.5R to test a literal 0-EV breakeven live trader." data-tip-ex="Example: Even bumping win rate from 40% to 44% at 1.5R multiplies prop firm EV dramatically because asymmetry amplifies small edges.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="winRate" class="has-suffix" min="10" max="85" step="0.5" value="40" />
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Baseline R:R
+                  <button type="button" class="tip-btn" data-tip-title="Baseline Reward-to-Risk (R)" data-tip="Target profit divided by stop loss (e.g., 1.5 means risking $500 to make $750). Together with Baseline WR, this defines your live-market expectancy." data-tip-ex="Example: JJ Simon's static 1.5R approach requires a 40.0% win rate to break even in a live brokerage account.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="baseRR" class="has-suffix" min="0.5" max="5" step="0.25" value="1.5" />
+                <span class="input-suffix">R</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Eval Risk / Trade
+                  <button type="button" class="tip-btn" data-tip-title="Evaluation Dollar Risk ($)" data-tip="Fixed dollar stop loss per trade during the evaluation phase. Larger compliant sizing reduces steps and beats trailing drawdown drag." data-tip-ex="Example: $1,000 risk at 1.5R ($1,500 target) clears a $3,000 eval in just 2 clean wins.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="evalRisk" class="has-prefix" min="50" max="5000" step="25" value="1000" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Funded Risk
+                  <button type="button" class="tip-btn" data-tip-title="Funded Dollar Risk ($)" data-tip="Fixed dollar stop loss per trade in the funded account. Must stay under the MAE Cap and fit the Funded Consistency rule." data-tip-ex="Example: $500 risk at 1.5R ($750 target) stays safely below Apex Legacy's $750 MAE cap and under 30% of the $2,600 safety net.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="fundedRisk" class="has-prefix" min="50" max="5000" step="25" value="500" />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Max Trades/Day
+                  <button type="button" class="tip-btn" data-tip-title="Max Trades Per Day" data-tip="Maximum trades allowed per session before stopping for the day. Controls daily drawdown velocity and consistency-cap exposure." data-tip-ex="Example: Setting 1–2 trades/day prevents overtrading tilt and keeps daily wins cleanly within 30%–50% consistency rules.">?</button>
+                </span>
+              </div>
+              <input type="number" id="maxTradesDay" min="1" max="10" step="1" value="2" />
+            </div>
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Comm &amp; Slippage
+                  <button type="button" class="tip-btn" data-tip-title="Round-Trip Commission & Slippage ($)" data-tip="Combined exchange fees, broker commissions, and average execution slippage deducted on every single trade." data-tip-ex="Example: Trading 2–4 NQ/MNQ contracts typically costs $8–$16 round-trip. High trade counts let friction eat thin structural margins.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="commSlippage" class="has-prefix" min="0" max="150" step="1" value="12" />
+              </div>
+            </div>
+            <div class="field field-full">
+              <div class="live-edge-banner">
+                <div class="live-edge-label">
+                  <span>Live Expectancy</span>
+                  <button type="button" class="tip-btn" data-tip-title="Underlying Live-Market Expectancy (E)" data-tip="Your raw statistical edge per trade in a symmetric live brokerage account before commissions: E = (WR × R) - (1 - WR). Positive prop EV when E <= 0 proves pure structural call-option arbitrage." data-tip-ex="Example: 40% WR at 1.5R yields E = 0.000R (0.0% edge). 44% WR at 1.5R yields E = +0.100R (+10% per R risked).">?</button>
+                </div>
+                <div class="live-edge-vals mono">
+                  <div id="liveExpR" style="font-size:0.86rem;font-weight:800;" class="text-amber">0.000R</div>
+                  <div id="liveExpPct" style="font-size:0.69rem;" class="text-secondary">0.0% / trade (raw)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION 5: INTRADAY PHYSICS & TRADE MANAGEMENT -->
+      <div class="accordion open">
+        <button type="button" class="acc-header">
+          <span class="acc-header-left"><span>05</span> Intraday Physics &amp; Mgmt</span>
+          <span class="acc-chevron">&#9662;</span>
+        </button>
+        <div class="acc-body">
+          <div class="field-grid">
+            <div class="field field-full">
+              <div class="field-label">
+                <span class="label-text">Open-Trade MFE Wick Volatility
+                  <button type="button" class="tip-btn" data-tip-title="Open-Trade MFE Wick Volatility" data-tip="Models how far losing trades spike into unrealized open profit (Maximum Favorable Excursion) before reversing to stop you out. Only affects Intraday Unrealized Trailing accounts." data-tip-ex="Example: 'Realistic M1 iFVG' models trades spiking +0.5R to +1.3R before reversing, ratcheting an intraday trailing floor up by hundreds of dollars on losses.">?</button>
+                </span>
+              </div>
+              <select id="mfeVolatility">
+                <option value="low">Low (Clean Trend / ~15% TP avg MFE)</option>
+                <option value="realistic" selected>Realistic M1 iFVG (~35% TP avg MFE)</option>
+                <option value="high">High (Wicky NQ / ~52% TP avg MFE)</option>
+              </select>
+            </div>
+
+            <div class="field field-full">
+              <div class="switch-box">
+                <div>
+                  <div class="switch-title">
+                    <span>Late-Stage BE Trigger</span>
+                    <button type="button" class="tip-btn" data-tip-title="Late-Stage Breakeven Trigger" data-tip="Leaves your stop untouched through the noisy 0.5R–0.8R iFVG retest zone, then moves stop to BE or +0.3R once price exceeds your Trigger R-level. Prevents catastrophic 2.3R–2.5R buffer wipeouts on Intraday trailing accounts." data-tip-ex="Example: Trigger at +1.15R stops a near-TP reversal at BE instead of losing -1.0R after ratcheting the floor +1.3R higher.">?</button>
+                  </div>
+                  <div class="switch-sub">Protects near-TP reversals before floor locks</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="beTriggerToggle" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field" id="beLevelWrap" style="display:none;">
+              <div class="field-label">
+                <span class="label-text">Trigger Level (R)
+                  <button type="button" class="tip-btn" data-tip-title="BE Trigger Level (R)" data-tip="Unrealized R-multiple required before shifting your stop. Setting it below 0.9R risks clipping normal winners during retests; 1.10R–1.25R targets late-stage reversals." data-tip-ex="Example: On a 1.5R setup, +1.15R triggers once price travels ~77% of the way to take-profit.">?</button>
+                </span>
+                <span class="mono text-cyan" id="beTriggerRVal">1.15R</span>
+              </div>
+              <input type="range" id="beTriggerR" min="0.6" max="1.8" step="0.05" value="1.15" />
+            </div>
+
+            <div class="field" id="beLockWrap" style="display:none;">
+              <div class="field-label">
+                <span class="label-text">Stop Lock Offset
+                  <button type="button" class="tip-btn" data-tip-title="Protected Stop Offset (R)" data-tip="Where the stop moves once Trigger Level is hit: 0.0R (true breakeven) or +0.3R (locks partial profit)." data-tip-ex="Example: Moving to +0.3R turns a potential -2.4R intraday buffer hit into a small positive close.">?</button>
+                </span>
+              </div>
+              <select id="beLockOffset">
+                <option value="0">0.0R (Breakeven)</option>
+                <option value="0.3">+0.3R (Lock Profit)</option>
+              </select>
+            </div>
+
+            <div class="field field-full">
+              <div class="switch-box">
+                <div>
+                  <div class="switch-title">
+                    <span>Early Safety-Net 1:1 Compression</span>
+                    <button type="button" class="tip-btn" data-tip-title="Early Safety-Net 1:1 Compression" data-tip="Runs a tighter 1:1 R:R target (with constant-expectancy adjusted win rate) strictly while the funded trailing floor is unlocked, then automatically switches back to your full target R:R once the Safety Net locks." data-tip-ex="Example: Reduces unrealized giveback during the most dangerous phase of an Intraday Trailing PA, locking the $50,100 floor faster.">?</button>
+                  </div>
+                  <div class="switch-sub">Use 1:1 until Safety Net locks, then full R:R</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="compress1to1Toggle" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =======================================================================
+         MAIN WORKSPACE (5 TABS)
+         ======================================================================= -->
+    <main class="workspace-main">
+      <!-- Navigation Tabs -->
+      <nav class="workspace-tabs" role="tablist" aria-label="Workspace Analytics Tabs">
+        <button type="button" class="ws-tab active" data-tab="tabOverview">
+          <span class="ws-tab-num">1</span> EV Overview &amp; Diagnostics
+        </button>
+        <button type="button" class="ws-tab" data-tab="tabOptimizer">
+          <span class="ws-tab-num">2</span> JJ Simon 2D Optimizer
+        </button>
+        <button type="button" class="ws-tab" data-tab="tabPlayback">
+          <span class="ws-tab-num">3</span> Monte Carlo &amp; DD Playback
+        </button>
+        <button type="button" class="ws-tab" data-tab="tabCopy">
+          <span class="ws-tab-num">4</span> Copy vs. Independent
+        </button>
+        <button type="button" class="ws-tab" data-tab="tabGuide">
+          <span class="ws-tab-num">5</span> How to Use &amp; Math Guide
+        </button>
+      </nav>
+
+      <!-- =====================================================================
+           TAB 1: EV OVERVIEW & DIAGNOSTICS
+           ===================================================================== -->
+      <section class="tab-pane active" id="tabOverview">
+        <!-- 6-Card KPI Strip -->
+        <div class="kpi-grid">
+          <div class="kpi-card pos" id="kpiNetEvCard">
+            <div class="kpi-head">
+              <span>Net EV / Cycle</span>
+              <button type="button" class="tip-btn" data-tip-title="Net Expected Value per Funded Cycle ($)" data-tip="Average real-dollar profit generated per funded account lifecycle: Expected Total Payouts minus Expected All-In Cost to Get Funded." data-tip-ex="Example: If Expected Payouts = $820 and Expected Cost to Fund = $108, Net EV = +$712 per funded cycle.">?</button>
+            </div>
+            <div class="kpi-val text-emerald" id="kpiNetEv">+$0</div>
+            <div class="kpi-foot">
+              <span id="kpiEvPerEval" class="mono">EV/Eval: $0</span>
+            </div>
+          </div>
+
+          <div class="kpi-card pos" id="kpiRoiCard">
+            <div class="kpi-head">
+              <span>ROI on Capital</span>
+              <button type="button" class="tip-btn" data-tip-title="Return on Fee Capital (%)" data-tip="Net EV divided by Expected Cost to Funded. Measures capital efficiency of every dollar spent on evaluation and activation fees." data-tip-ex="Example: +$350 Net EV on $110 expected funding cost equals +318% ROI per funded cycle.">?</button>
+            </div>
+            <div class="kpi-val text-emerald" id="kpiRoi">+0%</div>
+            <div class="kpi-foot">
+              <span id="kpiPerDollar" class="mono">$0.00 / $1 fee</span>
+            </div>
+          </div>
+
+          <div class="kpi-card info">
+            <div class="kpi-head">
+              <span>Eval Pass Rate</span>
+              <button type="button" class="tip-btn" data-tip-title="Evaluation Pass Rate (%)" data-tip="Percentage of evaluation attempts that hit the profit target while obeying drawdown, DLL, consistency, and minimum day rules." data-tip-ex="Example: Compare this against the random-walk continuous limit e^(-T/D) to see how much edge your bet sizing adds.">?</button>
+            </div>
+            <div class="kpi-val text-cyan" id="kpiPassRate">0.0%</div>
+            <div class="kpi-foot">
+              <span id="kpiAvgEvals" class="mono">~0.0 evals/PA</span>
+            </div>
+          </div>
+
+          <div class="kpi-card warn">
+            <div class="kpi-head">
+              <span>Cost to Funded</span>
+              <button type="button" class="tip-btn" data-tip-title="Expected Cost to Funded ($)" data-tip="Average total cash spent on failed evaluations plus the one-time activation fee to land one funded account: (Eval Fee ÷ Pass Rate) + Activation Fee." data-tip-ex="Example: $10 eval at 28% pass rate = $36 in evals + $75 activation = $111 total cost to get funded.">?</button>
+            </div>
+            <div class="kpi-val text-amber" id="kpiFundCost">$0</div>
+            <div class="kpi-foot">
+              <span id="kpiEvalPortion" class="mono">Evals: $0</span>
+            </div>
+          </div>
+
+          <div class="kpi-card info">
+            <div class="kpi-head">
+              <span>1st Payout Rate</span>
+              <button type="button" class="tip-btn" data-tip-title="Funded 1st Payout Rate (%)" data-tip="Percentage of activated funded accounts that survive to clear the safety net, consistency rules, and minimum days to collect Payout #1." data-tip-ex="Example: Combined with Eval Pass Rate, (Pass% × 1st Payout%) equals your probability of turning a single eval into cash.">?</button>
+            </div>
+            <div class="kpi-val text-cyan" id="kpiPay1Rate">0.0%</div>
+            <div class="kpi-foot">
+              <span id="kpiLockRate" class="mono">Locked: 0%</span>
+            </div>
+          </div>
+
+          <div class="kpi-card pos">
+            <div class="kpi-head">
+              <span>Exp. Payouts</span>
+              <button type="button" class="tip-btn" data-tip-title="Expected Total Payouts ($)" data-tip="Average lifetime real cash withdrawn per funded account across all modeled payout cycles (after your Trader Profit Split)." data-tip-ex="Example: Accounts that lock the trailing floor survive to collect Payout #2 and #3 at much higher rates, boosting total value.">?</button>
+            </div>
+            <div class="kpi-val text-emerald" id="kpiExpPayout">$0</div>
+            <div class="kpi-foot">
+              <span id="kpiAvgPayouts" class="mono">Avg 0.00 payouts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Rule Compliance & Edge Alerts Banner -->
+        <div class="alerts-stack" id="alertsBanner" aria-live="polite"></div>
+
+        <!-- Lifecycle Funnel & Cost vs Payouts Charts -->
+        <div class="two-col-grid">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>Account Lifecycle Survival Funnel</span>
+                  <button type="button" class="tip-btn" data-tip-title="Lifecycle Survival Funnel" data-tip="Tracks the percentage of accounts surviving each critical milestone from Eval Start through Payout #3+. Shows exactly where accounts are leaking." data-tip-ex="Example: A steep drop between Eval Pass and Safety Net Locked signals intraday trailing drawdown bleed or oversized risk.">?</button>
+                </div>
+                <div class="card-sub">Stage-by-stage survival from Evaluation Start through Multi-Payouts</div>
+              </div>
+              <span class="mono text-cyan" style="font-size:0.75rem;" id="funnelSampleTag">n = 2,000 runs</span>
+            </div>
+            <div class="canvas-shell">
+              <canvas id="funnelCanvas" height="250"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>Asymmetry: Cost vs. Expected Payouts</span>
+                  <button type="button" class="tip-btn" data-tip-title="Call-Option Cost vs. Payouts" data-tip="Compares your expected capital spent (failed evals + activation) against expected cash payouts from Cycle #1 and Subsequent Cycles." data-tip-ex="Example: Notice how Payout #2+ often generates disproportionate profit because the trailing floor is already locked.">?</button>
+                </div>
+                <div class="card-sub">Visualizing call-option payoff per funded cycle</div>
+              </div>
+            </div>
+            <div class="canvas-shell">
+              <canvas id="costPayCanvas" height="250"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plain-English Quant Verdict Card -->
+        <div class="verdict-box" id="quantVerdictBox">
+          <div class="verdict-title">
+            <span id="verdictHeadline">Quant Verdict: Analyzing Setup...</span>
+            <span class="mono" style="font-size:0.76rem;" id="verdictBaselineTag">e^(-T/D) Baseline: --</span>
+          </div>
+          <div class="verdict-body" id="verdictBody">Running Monte Carlo lifecycle simulation...</div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 2: JJ SIMON 2D OPTIMIZER (RISK x R:R HEATMAP)
+           ===================================================================== -->
+      <section class="tab-pane" id="tabOptimizer">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>JJ Simon 2D Structural Optimizer (Risk &times; R:R)</span>
+                <button type="button" class="tip-btn" data-tip-title="2D Risk × R:R Grid Optimizer" data-tip="Scans 72 combinations of Dollar Risk ($150–$1,500) and R:R (0.75R–3.0R) to isolate the mathematically optimal compliant sizing for your exact prop firm rulebook." data-tip-ex="Example: Cells violating MAE Cap or Daily Loss Limit are locked out automatically with a 🔒 icon.">?</button>
+              </div>
+              <div class="card-sub" id="optGridSub">Hover any cell for exact metrics. Click any legal cell to apply directly.</div>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+              <div class="seg-group" id="optPhaseGroup">
+                <button type="button" class="seg-btn active" data-opt-phase="funded">Optimize Funded (Net EV)</button>
+                <button type="button" class="seg-btn" data-opt-phase="eval">Optimize Eval (Min Cost)</button>
+              </div>
+
+              <div class="switch-box" style="padding:5px 9px;">
+                <span class="switch-title" style="font-size:0.73rem;">
+                  <span>Constant Expectancy</span>
+                  <button type="button" class="tip-btn" data-tip-title="Constant Expectancy Mode: p(R) = (1 + E) / (R + 1)" data-tip="Holds your true live-market trading skill (E) constant across every R:R row. Testing a higher 2.5R target automatically lowers win rate realistically instead of assuming you magically win at the same rate." data-tip-ex="Example: At E = 0 (breakeven), 1.0R uses 50.0% WR, 1.5R uses 40.0% WR, and 2.5R uses 28.6% WR.">?</button>
+                </span>
+                <label class="switch" style="margin-left:6px;">
+                  <input type="checkbox" id="constExpToggle" checked />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px; font-size:0.74rem;">
+            <span class="mono text-cyan" id="optFormulaBadge">Formula Active: p(R) = (1 + 0.000) / (R + 1)</span>
+            <span class="text-secondary">
+              <span style="color:#fde047;">&#9733;</span> Optimal Cell &nbsp;|&nbsp;
+              <span style="color:var(--cyan);">--</span> Current Input &nbsp;|&nbsp;
+              <span style="color:var(--rose);">&#128274;</span> MAE / DLL Locked
+            </span>
+          </div>
+
+          <div class="heatmap-scroll">
+            <div class="heatmap-table" id="heatmapTable"></div>
+          </div>
+        </div>
+
+        <!-- Optimal Setup Summary Card -->
+        <div class="opt-summary-card">
+          <div class="opt-metrics">
+            <div>
+              <div class="opt-item-lbl">Optimal Eval Setup</div>
+              <div class="opt-item-val" id="optBestEval">--</div>
+              <div class="opt-item-sub" id="optBestEvalSub">--</div>
+            </div>
+            <div>
+              <div class="opt-item-lbl">Optimal Funded Setup (Compliant)</div>
+              <div class="opt-item-val" id="optBestFunded">--</div>
+              <div class="opt-item-sub" id="optBestFundedSub">--</div>
+            </div>
+            <div>
+              <div class="opt-item-lbl">Projected Peak Net EV</div>
+              <div class="opt-item-val text-emerald" id="optBestEv">--</div>
+              <div class="opt-item-sub" id="optEvDelta">--</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" id="applyOptimalBtn">
+            <span>&#10004;</span> Apply Optimal Settings
+          </button>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 3: MONTE CARLO & DD FLOOR PLAYBACK
+           ===================================================================== -->
+      <section class="tab-pane" id="tabPlayback">
+        <!-- Quick Compare Toggle Pills -->
+        <div class="quick-compare-bar">
+          <div class="qc-controls">
+            <span style="font-size:0.74rem; font-weight:700; color:var(--cyan); text-transform:uppercase;">Quick A/B Flip:</span>
+            <button type="button" class="qc-pill active-amber" id="qcDDTypeBtn">
+              DD Mode: <strong id="qcDDTypeLbl">Intraday</strong>
+            </button>
+            <button type="button" class="qc-pill" id="qcBeBtn">
+              Late-Stage BE: <strong id="qcBeLbl">OFF</strong>
+            </button>
+            <button type="button" class="tip-btn" data-tip-title="Live Physics A/B Comparator" data-tip="Flip between Intraday vs. EOD drawdown and Late-Stage BE Trigger ON/OFF right here to immediately measure how much survival rate and buffer each rule saves." data-tip-ex="Example: Watch how flipping from Intraday to EOD eliminates amber wick floor ratchets instantly.">?</button>
+          </div>
+          <div class="mono" style="font-size:0.76rem;" id="qcDeltaReadout">Survival Delta: --</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>Monte Carlo Equity &amp; Trailing Drawdown Floor Engine</span>
+              </div>
+              <div class="card-sub">Visualize open-trade MFE wicks dragging the trailing floor vs. permanent Safety Net locking</div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <div class="seg-group" id="pbViewModeGroup">
+                <button type="button" class="seg-btn active" data-pb-view="single">Live Trade Playback</button>
+                <button type="button" class="seg-btn" data-pb-view="spaghetti">40-Path Spaghetti + Dist</button>
+              </div>
+              <div class="seg-group" id="pbPhaseGroup">
+                <button type="button" class="seg-btn active" data-pb-phase="funded">Funded</button>
+                <button type="button" class="seg-btn" data-pb-phase="eval">Eval</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Single-Account Playback Controls -->
+          <div class="playback-controls" id="singlePlaybackBar">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px;">
+              <button type="button" class="btn btn-sm btn-emerald" id="pbPlayBtn">&#9654; Play</button>
+              <button type="button" class="btn btn-sm" id="pbPauseBtn">&#10074;&#10074; Pause</button>
+              <button type="button" class="btn btn-sm" id="pbStepBtn">Step +1 Trade</button>
+              <button type="button" class="btn btn-sm" id="pbNewPathBtn">&#8635; New Path</button>
+              <select id="pbSpeedSel" style="width:auto; padding:5px 8px; font-size:0.74rem;">
+                <option value="320">1x Speed</option>
+                <option value="150" selected>2x Speed</option>
+                <option value="55">5x Speed</option>
+              </select>
+            </div>
+            <div class="mono" style="font-size:0.76rem;" id="pbHeaderStats">Trade 0 | Cushion: --</div>
+          </div>
+
+          <div class="canvas-shell" style="margin-top:10px;">
+            <canvas id="mcPlaybackCanvas" height="330"></canvas>
+            <div class="legend-bar" id="pbLegend">
+              <span><span class="dot" style="background:#06b6d4;"></span>Closed Equity</span>
+              <span><span class="dot" style="background:#f59e0b;"></span>Intraday Open MFE Wick</span>
+              <span><span class="dot" style="background:#f43f5e;"></span>Trailing DD Floor (Active)</span>
+              <span><span class="dot" style="background:#10b981;"></span>DD Floor Locked / Payout</span>
+            </div>
+          </div>
+
+          <!-- Trade-by-Trade Live Readout Log (Single Mode) -->
+          <div id="tradeLogSection" style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <strong style="font-size:0.78rem;">Trade-by-Trade Execution &amp; Floor Ratchet Log</strong>
+              <span class="mono text-muted" style="font-size:0.72rem;" id="logSummaryBadge">--</span>
+            </div>
+            <div class="trade-log-wrap">
+              <table class="quant-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Day</th>
+                    <th>Outcome</th>
+                    <th class="num">Open MFE Peak</th>
+                    <th class="num">Closed P&amp;L</th>
+                    <th class="num">Equity</th>
+                    <th class="num">DD Floor</th>
+                    <th class="num">Buffer Left</th>
+                  </tr>
+                </thead>
+                <tbody id="tradeLogBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Outcome Histogram (Spaghetti Mode) -->
+          <div id="spaghettiHistWrap" style="display:none; margin-top:12px;">
+            <div class="canvas-shell">
+              <canvas id="outcomeHistCanvas" height="170"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 4: COPY TRADING VS. INDEPENDENT STRESS TEST
+           ===================================================================== -->
+      <section class="tab-pane" id="tabCopy">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>Copy Trading vs. Independent Account Stress Test</span>
+                <button type="button" class="tip-btn" data-tip-title="Multi-Account Correlation Stress Test" data-tip="Runs 1,600 full multi-account campaigns comparing 100% correlated copy trading (both sized down and full size) against uncorrelated independent/staggered accounts." data-tip-ex="Example: Full-size copying gives identical mean EV to independent accounts, but dramatically spikes Zero-Payout Risk and Total Wipeout Rate.">?</button>
+              </div>
+              <div class="card-sub">Exposing the trap between 100% correlation ruin and small-size trailing drawdown bleed</div>
+            </div>
+          </div>
+
+          <div class="stress-controls">
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Accounts (N)
+                  <button type="button" class="tip-btn" data-tip-title="Number of Funded Account Slots (2–10)" data-tip="How many accounts you are trading simultaneously (either copy-traded together or rotated independently)." data-tip-ex="Example: Default 3 matches running three 50K PAs side-by-side.">?</button>
+                </span>
+                <span class="mono text-cyan" id="copyNVal">3 Accts</span>
+              </div>
+              <input type="range" id="copyNumAccts" min="2" max="10" step="1" value="3" />
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Sized-Down Copy Risk
+                  <button type="button" class="tip-btn" data-tip-title="Conservative Sized-Down Copy Risk ($)" data-tip="The reduced risk per account commonly used by copy traders hoping to smooth swings (e.g., $200 risk × 3 accounts = $600 combined)." data-tip-ex="Example: Shows how sizing down pushes every single account toward the trailing-DD bleed limit e^(-T/D).">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="copySizedDown" class="has-prefix" min="50" max="600" step="25" value="200" />
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                <span class="label-text">Bankroll Budget
+                  <button type="button" class="tip-btn" data-tip-title="Dedicated Fee Bankroll ($)" data-tip="Total cash reserved for evaluations and activation fees. Used to calculate Total Wipeout Rate (running out of fee capital before getting paid)." data-tip-ex="Example: A $1,000 budget survives ~9 Apex $10/$75 funded cycles if diversified, but can vanish quickly when all accounts correlate.">?</button>
+                </span>
+              </div>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="copyBankroll" class="has-prefix" min="100" max="20000" step="100" value="1000" />
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="runCopyStressBtn">
+              <span>&#9889;</span> Run 1,600 Campaigns
+            </button>
+          </div>
+
+          <!-- Side-by-side Comparison Cards -->
+          <div class="strategy-cards" style="margin-top:14px;">
+            <div class="strat-card amber">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong class="text-amber">1. Sized-Down Copy</strong>
+                <span class="mono text-muted" style="font-size:0.72rem;" id="scLowTag">$200 × 3 (100% Corr)</span>
+              </div>
+              <div id="scLowMetrics"></div>
+            </div>
+
+            <div class="strat-card rose">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong class="text-rose">2. Full-Size Copy</strong>
+                <span class="mono text-muted" style="font-size:0.72rem;" id="scFullTag">$500 × 3 (100% Corr)</span>
+              </div>
+              <div id="scFullMetrics"></div>
+            </div>
+
+            <div class="strat-card emerald">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong class="text-emerald">3. Independent Optimal</strong>
+                <span class="mono text-muted" style="font-size:0.72rem;" id="scIndTag">$500 × 3 (Uncorrelated)</span>
+              </div>
+              <div id="scIndMetrics"></div>
+            </div>
+          </div>
+
+          <!-- Distribution Chart -->
+          <div class="canvas-shell" style="margin-top:14px;">
+            <canvas id="copyDistCanvas" height="290"></canvas>
+            <div class="legend-bar">
+              <span><span class="dot" style="background:#f59e0b;"></span>Sized-Down Copy (Low Risk, Bleeds DD)</span>
+              <span><span class="dot" style="background:#f43f5e;"></span>Full-Size Copy (Boom-or-Bust Variance)</span>
+              <span><span class="dot" style="background:#10b981;"></span>Independent Optimal (Smooth Cash Flow)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           TAB 5: HOW TO USE & MATH GUIDE (BUILT-IN MANUAL)
+           ===================================================================== -->
+      <section class="tab-pane" id="tabGuide">
+        <!-- 5-Step Quick-Start Playbook -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">5-Step Quick-Start Playbook</div>
+              <div class="card-sub">Follow this sequence to reverse-engineer optimal risk for any prop firm ruleset</div>
+            </div>
+          </div>
+          <div class="playbook-grid">
+            <div class="step-card">
+              <span class="step-badge">1</span>
+              <h4>Load Preset &amp; Pricing</h4>
+              <p>Click a 2026 preset pill in the top bar (e.g., <strong>Apex 50K Legacy $10 Promo</strong>), then verify today's exact eval discount, activation fee, and payout caps in Accordions 01–03.</p>
+            </div>
+            <div class="step-card">
+              <span class="step-badge">2</span>
+              <h4>Set Edge (or Test 0-EV)</h4>
+              <p>Enter your journaled win rate and R:R in Accordion 04. Leave at <strong>40% WR / 1.5R</strong> (<span class="mono">0.000R</span>) to test whether the firm's fee asymmetry alone creates positive EV.</p>
+            </div>
+            <div class="step-card">
+              <span class="step-badge">3</span>
+              <h4>Run 2D Optimizer</h4>
+              <p>Open <strong>Tab 2</strong>. Scan the Risk &times; R:R heatmap (holding your skill constant), spot MAE-locked cells, and click <strong>Apply Optimal Settings</strong> to lock in compliant peak sizing.</p>
+            </div>
+            <div class="step-card">
+              <span class="step-badge">4</span>
+              <h4>Watch Wick Physics</h4>
+              <p>Open <strong>Tab 3</strong> and hit <strong>Play</strong>. Watch amber open-trade MFE wicks ratchet an intraday trailing floor—then flip the A/B toggles for <strong>EOD</strong> and <strong>Late-Stage BE</strong> to measure the lift.</p>
+            </div>
+            <div class="step-card">
+              <span class="step-badge">5</span>
+              <h4>Size Your Bankroll</h4>
+              <p>Open <strong>Tab 4</strong> to stress-test 1,600 multi-account runs. Compare Zero-Payout Risk and Recommended Bankroll Reserve so cold streaks never wipe you out before EV plays out.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Quant Math Behind Prop Firm Arbitrage -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">The Quant Math Behind Prop Firm Arbitrage</div>
+              <div class="card-sub">Five mathematical principles that separate optimal bet structurers from struggling traders</div>
+            </div>
+          </div>
+          <div class="math-grid">
+            <div class="math-card">
+              <h4>A. Call-Option Asymmetry</h4>
+              <div class="formula-pill">Net EV = E[Total Payouts] &minus; (Eval Fee &divide; P(Pass) + Activation)</div>
+              <p>Live trading is symmetric: risking $2,000 to make $3,000 requires positive market edge just to beat fees. A prop firm account is a <strong>capped-downside call option</strong>: your real-dollar risk is limited to the challenge fee (e.g., $10), while payouts are paid in real dollars tied to the $50K simulated balance.</p>
+            </div>
+
+            <div class="math-card">
+              <h4>B. The Random Walk Trap (Why Big Bets Beat Small Bets)</h4>
+              <div class="formula-pill">P(pass)<sub>small bets</sub> &rarr; e<sup>&minus;T / D</sup></div>
+              <p>On a trailing drawdown account, taking tiny $150–$200 trades causes every minor equity high and pullback to ratchet your bust floor upward, collapsing a breakeven trader's pass probability toward <span class="mono">e<sup>&minus;T/D</sup></span> (22.3% at T/D = 1.5). Concentrating risk into large compliant swings leapfrogs across the floor with far fewer ratchets and cuts commission drag.</p>
+            </div>
+
+            <div class="math-card">
+              <h4>C. Constant Expectancy Scaling Across R:R</h4>
+              <div class="formula-pill">p(R) = (1 + E) &divide; (R + 1), &nbsp; where E = p<sub>0</sub>&middot;R<sub>0</sub> &minus; (1 &minus; p<sub>0</sub>)</div>
+              <p>When optimizing R:R, you cannot assume your 40% win rate at 1.5R stays 40% at 3.0R. PropEdge Quant holds your true market expectancy <strong>E</strong> constant so every row in the 2D heatmap reflects realistic win-rate compression—isolating pure structural edge from fantasy inputs.</p>
+            </div>
+
+            <div class="math-card">
+              <h4>D. The Intraday Trailing Paradox</h4>
+              <div class="formula-pill">Buffer Burn on Near-TP Loss = MFE Peak (+1.4R) + Stop (&minus;1.0R) = 2.4R</div>
+              <p>On intraday unrealized trailing accounts, moving to breakeven too early (+0.5R) gets clipped during normal M1 iFVG retests, while leaving a pure set-and-forget stop exposes you to catastrophic 2.4R buffer nukes on late reversals. A <strong>Late-Stage BE Trigger (+1.15R)</strong> or <strong>1:1 Safety-Net Compression</strong> solves this until the floor locks.</p>
+            </div>
+
+            <div class="math-card" style="grid-column: 1 / -1;">
+              <h4>E. The Consistency Rule Inflation Trap</h4>
+              <div class="formula-pill">Effective Required Profit = max(Base Target, Best Single Day &divide; Consistency %)</div>
+              <p>On a 30% funded consistency rule (like Apex Legacy), scoring a single $1,500 windfall day forces your required total profit up to <span class="mono">$1,500 &divide; 0.30 = $5,000</span> before withdrawal unlocks—adding extra steps that erode EV. Capping single-day profit beneath <span class="mono">Base Target &times; Consistency%</span> (e.g., $750/day on Legacy) avoids the trap while maximizing step size.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complete Searchable Parameter & Metric Glossary -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Complete Parameter &amp; Metric Glossary</div>
+              <div class="card-sub">Searchable reference for every rule, input, and output KPI inside PropEdge Quant</div>
+            </div>
+          </div>
+          <div class="glossary-search">
+            <input type="text" id="glossarySearchInput" placeholder="Filter glossary (e.g., MAE, MFE, consistency, safety net, breakeven, copy)..." />
+          </div>
+          <div class="glossary-table-wrap">
+            <table class="quant-table">
+              <thead>
+                <tr>
+                  <th style="width:24%;">Term / Setting</th>
+                  <th style="width:16%;">Category</th>
+                  <th>Plain-English Definition &amp; EV Impact</th>
+                </tr>
+              </thead>
+              <tbody id="glossaryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Global Viewport-Aware Tooltip -->
+  <div id="globalTooltip" role="tooltip" aria-hidden="true">
+    <div class="tt-title" id="ttTitle"></div>
+    <div class="tt-body" id="ttBody"></div>
+    <div class="tt-example" id="ttExample"></div>
+  </div>
+
+  <!-- Toast Host -->
+  <div id="toastHost"></div>
+
+  <script>
+    /* =========================================================================
+       PROPEDGE QUANT — PROP FIRM EV & OPTIMAL SIZING ENGINE
+       100% Vanilla JavaScript | Mulberry32 PRNG | High-DPI HTML5 Canvas
+       ========================================================================= */
+    (function () {
+      "use strict";
+
+      // -----------------------------------------------------------------------
+      // 1. DETERMINISTIC SEEDED PRNG (Mulberry32)
+      // -----------------------------------------------------------------------
+      function mulberry32(seed) {
+        let a = seed >>> 0;
+        return function () {
+          a |= 0;
+          a = (a + 0x6D2B79F5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      // -----------------------------------------------------------------------
+      // 2. ACCURATE 2026 PROP FIRM PRESETS
+      // -----------------------------------------------------------------------
+      const PRESETS = {
+        apexLegacy: {
+          name: "Apex 50K Legacy ($10 Promo)",
+          evalFee: 10,
+          activationFee: 75,
+          payoutSplit: 100,
+          maxPayout: 2000,
+          maxPayouts: 3,
+          simCount: 2000,
+          evalTarget: 3000,
+          evalDD: 2500,
+          evalDDType: "intraday",
+          evalDLL: 0,
+          evalConsistency: 0,
+          evalMinDays: 1,
+          fundedDD: 2500,
+          fundedDDType: "intraday",
+          safetyNet: 2600,
+          fundedConsistency: 30,
+          maeCap: 750,
+          fundedMinDays: 8,
+          minQualProfit: 50,
+          winRate: 40,
+          baseRR: 1.5,
+          evalRisk: 1000,
+          fundedRisk: 500,
+          maxTradesDay: 2,
+          commSlippage: 12,
+          mfeVolatility: "realistic",
+          beTriggerToggle: false,
+          beTriggerR: 1.15,
+          beLockOffset: "0",
+          compress1to1Toggle: false
+        },
+        apexEod: {
+          name: "Apex 50K EOD (2026)",
+          evalFee: 40,
+          activationFee: 85,
+          payoutSplit: 100,
+          maxPayout: 2000,
+          maxPayouts: 6,
+          simCount: 2000,
+          evalTarget: 3000,
+          evalDD: 2000,
+          evalDDType: "eod",
+          evalDLL: 1000,
+          evalConsistency: 0,
+          evalMinDays: 1,
+          fundedDD: 2000,
+          fundedDDType: "eod",
+          safetyNet: 2100,
+          fundedConsistency: 50,
+          maeCap: 0,
+          fundedMinDays: 5,
+          minQualProfit: 250,
+          winRate: 40,
+          baseRR: 1.5,
+          evalRisk: 1000,
+          fundedRisk: 750,
+          maxTradesDay: 2,
+          commSlippage: 12,
+          mfeVolatility: "realistic",
+          beTriggerToggle: false,
+          beTriggerR: 1.15,
+          beLockOffset: "0",
+          compress1to1Toggle: false
+        },
+        topstep: {
+          name: "Topstep 50K Combine/XFA (2026)",
+          evalFee: 49,
+          activationFee: 149,
+          payoutSplit: 90,
+          maxPayout: 2000,
+          maxPayouts: 5,
+          simCount: 2000,
+          evalTarget: 3000,
+          evalDD: 2000,
+          evalDDType: "eod",
+          evalDLL: 1000,
+          evalConsistency: 55,
+          evalMinDays: 2,
+          fundedDD: 2000,
+          fundedDDType: "eod",
+          safetyNet: 0,
+          fundedConsistency: 0,
+          maeCap: 0,
+          fundedMinDays: 5,
+          minQualProfit: 150,
+          winRate: 40,
+          baseRR: 1.5,
+          evalRisk: 1000,
+          fundedRisk: 800,
+          maxTradesDay: 2,
+          commSlippage: 12,
+          mfeVolatility: "realistic",
+          beTriggerToggle: false,
+          beTriggerR: 1.15,
+          beLockOffset: "0",
+          compress1to1Toggle: false
+        },
+        mffu: {
+          name: "MyFundedFutures 50K Builder (2026)",
+          evalFee: 97,
+          activationFee: 0,
+          payoutSplit: 80,
+          maxPayout: 2000,
+          maxPayouts: 6,
+          simCount: 2000,
+          evalTarget: 3000,
+          evalDD: 2000,
+          evalDDType: "eod",
+          evalDLL: 0,
+          evalConsistency: 0,
+          evalMinDays: 1,
+          fundedDD: 2000,
+          fundedDDType: "eod",
+          safetyNet: 2100,
+          fundedConsistency: 50,
+          maeCap: 0,
+          fundedMinDays: 2,
+          minQualProfit: 100,
+          winRate: 40,
+          baseRR: 1.5,
+          evalRisk: 1000,
+          fundedRisk: 750,
+          maxTradesDay: 2,
+          commSlippage: 12,
+          mfeVolatility: "realistic",
+          beTriggerToggle: false,
+          beTriggerR: 1.15,
+          beLockOffset: "0",
+          compress1to1Toggle: false
+        }
+      };
+
+      // -----------------------------------------------------------------------
+      // 3. GLOSSARY DATA (TAB 5)
+      // -----------------------------------------------------------------------
+      const GLOSSARY_ITEMS = [
+        { term: "Net EV per Cycle ($)", cat: "KPI Output", desc: "Expected real-dollar profit per funded lifecycle: Expected Total Payouts minus Expected Cost to Funded. Positive EV means repeating the process prints money over large samples." },
+        { term: "Expected Cost to Funded ($)", cat: "KPI Output", desc: "All-in average fee outlay required to get 1 funded account: (Eval Fee ÷ Eval Pass Rate) + Activation Fee." },
+        { term: "ROI on Capital (%)", cat: "KPI Output", desc: "Net EV divided by Expected Cost to Funded. Shows the percentage return on every dollar spent on challenge and activation fees." },
+        { term: "Random Walk Baseline (e^(-T/D))", cat: "Quant Math", desc: "Theoretical pass probability of a 0-EV trader taking infinitesimally small bets on a trailing drawdown account. Larger compliant bets beat this baseline." },
+        { term: "Constant Expectancy p(R)", cat: "Optimizer", desc: "Holds live trading edge E constant when scanning R:R targets via p(R) = (1 + E) / (R + 1), preventing unrealistic win-rate assumptions on wide targets." },
+        { term: "Intraday Unrealized Trailing DD", cat: "Firm Rule", desc: "Liquidation floor trails upward based on open-trade unrealized high-water marks—meaning a trade that spikes +$600 then stops out at -$500 permanently removes $1,100 of buffer." },
+        { term: "End-of-Day (EOD) Trailing DD", cat: "Firm Rule", desc: "Liquidation floor only updates once per day based on closed end-of-day balance, immunizing your account against intraday wick reversals." },
+        { term: "Safety Net Lock Threshold", cat: "Funded Rule", desc: "Profit threshold where the trailing floor permanently freezes (e.g., $2,600 on Apex Legacy locks floor at $50,100). Setting $0 models 50%-balance withdrawal firms like Topstep." },
+        { term: "MAE Single-Trade Loss Cap", cat: "Funded Rule", desc: "Maximum Adverse Excursion cap limiting open unrealized loss on a single trade (e.g., 30% of $2,500 DD = $750 on Apex Legacy). Violating it risks payout denial." },
+        { term: "Consistency Cap (%)", cat: "Firm Rule", desc: "Caps your best single day as a % of total profit. Exceeding it inflates required profit to (Best Day ÷ Consistency%). Set 0% for 1-day pass allowance." },
+        { term: "Daily Loss Limit (DLL)", cat: "Firm Rule", desc: "Hard daily loss ceiling. Single-trade risks exceeding DLL are flagged/locked out; reaching DLL halts trading for the remainder of the session." },
+        { term: "Open-Trade MFE Wick Volatility", cat: "Physics", desc: "Simulates how far losing trades push into open profit before reversing on intraday trailing accounts (Low ~15% TP, Realistic M1 iFVG ~35% TP, High ~52% TP)." },
+        { term: "Late-Stage Breakeven Trigger", cat: "Trade Mgmt", desc: "Leaves stops untouched through normal 0.5R–0.8R retests, then shifts stop to BE or +0.3R past +1.15R to prevent 2.4R intraday buffer wipeouts." },
+        { term: "Early Safety-Net 1:1 Compression", cat: "Trade Mgmt", desc: "Compresses target to 1:1 R:R (with higher adjusted win rate) strictly while the funded trailing floor is unlocked, switching back to target R:R once locked." },
+        { term: "Zero-Payout Risk (%)", cat: "Copy Stress", desc: "Percentage of multi-account campaigns that end with $0 withdrawn. 100% correlated copy trading dramatically inflates this compared to independent accounts." },
+        { term: "Total Wipeout Rate (%)", cat: "Copy Stress", desc: "Probability that cumulative fee drawdowns exceed your dedicated Bankroll Budget during a multi-account campaign." }
+      ];
+
+      // -----------------------------------------------------------------------
+      // 4. APPLICATION STATE
+      // -----------------------------------------------------------------------
+      const appState = {
+        seed: 20261123,
+        activeTab: "tabOverview",
+        optPhase: "funded", // "funded" | "eval"
+        pbView: "single",   // "single" | "spaghetti"
+        pbPhase: "funded",  // "funded" | "eval"
+        pbPathIdx: 0,
+        pbStep: 9999,
+        pbTimer: null,
+        lastSim: null,
+        lastOpt: null,
+        lastCopy: null,
+        evalSamples: [],
+        fundedSamples: []
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      // Formatting utilities
+      function fmtMoney(v, signed = false) {
+        if (!Number.isFinite(v)) return "—";
+        const abs = Math.abs(v);
+        const rounded = abs >= 100 ? Math.round(abs).toLocaleString("en-US") : abs.toFixed(0);
+        if (v < -0.5) return "-$" + rounded;
+        if (signed && v > 0.5) return "+$" + rounded;
+        return "$" + rounded;
+      }
+      function fmtPct(v, d = 1) {
+        if (!Number.isFinite(v)) return "—";
+        return (v * 100).toFixed(d) + "%";
+      }
+
+      function toast(msg, kind = "ok") {
+        const host = $("toastHost");
+        const el = document.createElement("div");
+        el.className = "toast";
+        if (kind === "warn") el.style.borderColor = "var(--amber-border)";
+        if (kind === "err") el.style.borderColor = "var(--rose-border)";
+        el.textContent = msg;
+        host.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transition = "opacity 200ms ease";
+          setTimeout(() => el.remove(), 220);
+        }, 2600);
+      }
+
+      // -----------------------------------------------------------------------
+      // 5. READ & SYNC CONFIGURATION
+      // -----------------------------------------------------------------------
+      function getConfig() {
+        const n = (id, fb) => {
+          const v = parseFloat($(id).value);
+          return Number.isFinite(v) ? v : fb;
+        };
+        const cfg = {
+          evalFee: Math.max(0, n("evalFee", 10)),
+          activationFee: Math.max(0, n("activationFee", 75)),
+          payoutSplit: Math.min(100, Math.max(10, n("payoutSplit", 100))),
+          maxPayout: Math.max(100, n("maxPayout", 2000)),
+          maxPayouts: Math.max(1, Math.min(6, Math.round(n("maxPayouts", 3)))),
+          simCount: Math.max(500, Math.min(5000, Math.round(n("simCount", 2000)))),
+
+          evalTarget: Math.max(100, n("evalTarget", 3000)),
+          evalDD: Math.max(100, n("evalDD", 2500)),
+          evalDDType: $("evalDDType").value,
+          evalDLL: Math.max(0, n("evalDLL", 0)),
+          evalConsistency: Math.min(100, Math.max(0, n("evalConsistency", 0))),
+          evalMinDays: Math.max(1, Math.round(n("evalMinDays", 1))),
+
+          fundedDD: Math.max(100, n("fundedDD", 2500)),
+          fundedDDType: $("fundedDDType").value,
+          safetyNet: Math.max(0, n("safetyNet", 2600)),
+          fundedConsistency: Math.min(100, Math.max(0, n("fundedConsistency", 30))),
+          maeCap: Math.max(0, n("maeCap", 750)),
+          fundedMinDays: Math.max(1, Math.round(n("fundedMinDays", 8))),
+          minQualProfit: Math.max(0, n("minQualProfit", 50)),
+
+          winRate: Math.min(90, Math.max(5, n("winRate", 40))),
+          baseRR: Math.max(0.5, Math.min(5, n("baseRR", 1.5))),
+          evalRisk: Math.max(25, n("evalRisk", 1000)),
+          fundedRisk: Math.max(25, n("fundedRisk", 500)),
+          maxTradesDay: Math.max(1, Math.min(10, Math.round(n("maxTradesDay", 2)))),
+          commSlippage: Math.max(0, n("commSlippage", 12)),
+
+          mfeVolatility: $("mfeVolatility").value,
+          beTriggerToggle: $("beTriggerToggle").checked,
+          beTriggerR: Math.max(0.5, Math.min(2.5, n("beTriggerR", 1.15))),
+          beLockOffset: parseFloat($("beLockOffset").value) || 0,
+          compress1to1Toggle: $("compress1to1Toggle").checked
+        };
+
+        // Derived live-market expectancy E = p * R - (1 - p)
+        const p0 = cfg.winRate / 100;
+        cfg.liveExpR = p0 * cfg.baseRR - (1 - p0);
+
+        // Payout 1 profit requirement:
+        // If safetyNet === 0 (Topstep 50% withdrawable model): need 2x maxPayout
+        // If safetyNet > 0 (Apex/MFFU buffer model): safetyNet + max(0, maxPayout - 500)
+        cfg.firstPayoutReq = cfg.safetyNet > 0
+          ? cfg.safetyNet + Math.max(0, cfg.maxPayout - 500)
+          : cfg.maxPayout * 2;
+
+        // Permanent floor level once safety net triggers
+        cfg.lockFloor = cfg.safetyNet > 0
+          ? Math.max(0, cfg.safetyNet - cfg.fundedDD)
+          : 0;
+
+        // MFE Beta-like shaping parameter for losing trade open spikes
+        cfg.mfeMeanFrac = cfg.mfeVolatility === "low" ? 0.15 : (cfg.mfeVolatility === "high" ? 0.52 : 0.35);
+        return cfg;
+      }
+
+      function effectiveWinRate(cfg, rr, useConstantExp = true) {
+        if (!useConstantExp) {
+          return Math.min(0.96, Math.max(0.04, cfg.winRate / 100));
+        }
+        const p = (1 + cfg.liveExpR) / (rr + 1);
+        return Math.min(0.96, Math.max(0.04, p));
+      }
+
+      function applyPreset(key) {
+        const p = PRESETS[key];
+        if (!p) return;
+        const fields = [
+          "evalFee", "activationFee", "payoutSplit", "maxPayout", "maxPayouts", "simCount",
+          "evalTarget", "evalDD", "evalDDType", "evalDLL", "evalConsistency", "evalMinDays",
+          "fundedDD", "fundedDDType", "safetyNet", "fundedConsistency", "maeCap",
+          "fundedMinDays", "minQualProfit", "winRate", "baseRR", "evalRisk", "fundedRisk",
+          "maxTradesDay", "commSlippage", "mfeVolatility", "beTriggerR", "beLockOffset"
+        ];
+        fields.forEach((f) => {
+          if ($(f) && p[f] !== undefined) $(f).value = p[f];
+        });
+        $("beTriggerToggle").checked = !!p.beTriggerToggle;
+        $("compress1to1Toggle").checked = !!p.compress1to1Toggle;
+        syncSidebarReadouts();
+      }
+
+      function syncSidebarReadouts() {
+        const cfg = getConfig();
+        $("maxPayoutsVal").textContent = cfg.maxPayouts;
+        $("simCountVal").textContent = cfg.simCount.toLocaleString("en-US");
+        $("beTriggerRVal").textContent = cfg.beTriggerR.toFixed(2) + "R";
+        $("beLevelWrap").style.display = cfg.beTriggerToggle ? "flex" : "none";
+        $("beLockWrap").style.display = cfg.beTriggerToggle ? "flex" : "none";
+
+        const expR = cfg.liveExpR;
+        const elR = $("liveExpR");
+        elR.textContent = (expR >= 0 ? "+" : "") + expR.toFixed(3) + "R";
+        elR.className = expR > 0.003 ? "text-emerald" : (expR < -0.003 ? "text-rose" : "text-amber");
+        $("liveExpPct").textContent = `${(expR >= 0 ? "+" : "") + (expR * 100).toFixed(1)}% / R risked`;
+
+        // Sync Tab 3 Quick-Compare pills
+        const isIntraday = cfg.fundedDDType === "intraday";
+        $("qcDDTypeLbl").textContent = isIntraday ? "Intraday" : "EOD";
+        $("qcDDTypeBtn").className = "qc-pill " + (isIntraday ? "active-amber" : "active-emerald");
+
+        $("qcBeLbl").textContent = cfg.beTriggerToggle ? `ON (${cfg.beTriggerR.toFixed(2)}R)` : "OFF";
+        $("qcBeBtn").className = "qc-pill " + (cfg.beTriggerToggle ? "active-emerald" : "");
+      }
+
+      // -----------------------------------------------------------------------
+      // 6. CORE MONTE CARLO PHYSICS ENGINE (EVAL & FUNDED)
+      // -----------------------------------------------------------------------
+      function sampleLossMfe(reward, meanFrac, rand) {
+        if (meanFrac <= 0.01) return 0;
+        // Power-law beta approximation matching exact meanFrac on [0, 0.96]
+        const alpha = Math.max(0.4, (1 / meanFrac) - 1);
+        const frac = Math.pow(rand(), alpha) * 0.96;
+        return reward * frac;
+      }
+
+      function simulateEvalPath(cfg, risk, rr, pWin, rand, record) {
+        const target = cfg.evalTarget;
+        const maxDD = cfg.evalDD;
+        const isIntraday = cfg.evalDDType === "intraday";
+        const dll = cfg.evalDLL;
+        const consFrac = cfg.evalConsistency > 0 ? cfg.evalConsistency / 100 : 1.0;
+        const minDays = cfg.evalMinDays;
+        const maxTrDay = cfg.maxTradesDay;
+        const comm = cfg.commSlippage;
+        const reward = risk * rr;
+
+        const beOn = cfg.beTriggerToggle && isIntraday;
+        const beTrigAmt = cfg.beTriggerR * risk;
+        const beLockAmt = cfg.beLockOffset * risk;
+        // Realistic probability that an early BE stop clips a trade that would have won
+        const beClipProb = beOn ? Math.max(0.02, 0.34 * Math.exp(-1.7 * cfg.beTriggerR)) : 0;
+
+        let eq = 0;
+        let peak = 0;
+        let floor = -maxDD;
+        let bestDay = 0;
+        let days = 0;
+        let trades = 0;
+        const MAX_DAYS = 160;
+
+        const log = record ? [{ t: 0, day: 0, res: "START", mfe: 0, pnl: 0, eq: 0, fl: floor, locked: false, payout: false }] : null;
+
+        while (days < MAX_DAYS) {
+          days++;
+          let dayPnl = 0;
+
+          // If target & consistency already satisfied, flip micro days until minDays
+          const effTargetNow = consFrac < 0.999 ? Math.max(target, bestDay / consFrac) : target;
+          if (eq >= effTargetNow) {
+            if (days >= minDays) {
+              return { passed: true, trades, days, finalEq: eq, log };
+            }
+            if (record) log.push({ t: trades, day: days, res: "QUAL DAY", mfe: 0, pnl: 0, eq, fl: floor, locked: false, payout: false });
+            if (days >= minDays) return { passed: true, trades, days, finalEq: eq, log };
+            continue;
+          }
+
+          for (let tr = 0; tr < maxTrDay; tr++) {
+            if (dll > 0 && dayPnl <= -dll + 1e-6) break;
+            trades++;
+
+            const prevEq = eq;
+            let pnl = 0;
+            let mfe = 0;
+            let resTag = "LOSS";
+            const isWin = rand() < pWin;
+
+            if (isWin) {
+              if (beOn && rand() < beClipProb) {
+                mfe = beTrigAmt;
+                if (isIntraday && prevEq + mfe > peak) {
+                  peak = prevEq + mfe;
+                  floor = Math.max(floor, peak - maxDD);
+                }
+                pnl = beLockAmt - comm;
+                resTag = "BE CLIP";
+              } else {
+                mfe = reward;
+                if (isIntraday && prevEq + mfe > peak) {
+                  peak = prevEq + mfe;
+                  floor = Math.max(floor, peak - maxDD);
+                }
+                pnl = reward - comm;
+                resTag = "WIN";
+              }
+            } else {
+              mfe = sampleLossMfe(reward, cfg.mfeMeanFrac, rand);
+              if (isIntraday && mfe > 0 && prevEq + mfe > peak) {
+                peak = prevEq + mfe;
+                floor = Math.max(floor, peak - maxDD);
+              }
+              if (beOn && mfe >= beTrigAmt) {
+                pnl = beLockAmt - comm;
+                resTag = "BE SAVED";
+              } else {
+                let rawLoss = risk + comm;
+                if (dll > 0 && dayPnl - rawLoss < -dll) {
+                  rawLoss = Math.max(0, dayPnl + dll);
+                }
+                pnl = -rawLoss;
+                resTag = "LOSS";
+              }
+            }
+
+            eq += pnl;
+            dayPnl += pnl;
+
+            if (record) {
+              log.push({ t: trades, day: days, res: resTag, mfe, pnl, eq, fl: floor, locked: false, payout: false });
+            }
+
+            // Immediate bust check
+            if (eq <= floor + 1e-6) {
+              return { passed: false, trades, days, finalEq: eq, log };
+            }
+
+            // Check immediate pass if 1-day pass allowed
+            const curBestDay = Math.max(bestDay, dayPnl);
+            const curReq = consFrac < 0.999 ? Math.max(target, curBestDay / consFrac) : target;
+            if (eq >= curReq && days >= minDays) {
+              return { passed: true, trades, days, finalEq: eq, log };
+            }
+
+            // Stop day cleanly if hitting safe consistency limit for base target
+            if (consFrac < 0.999 && dayPnl >= target * consFrac - 1e-6) {
+              break;
+            }
+          }
+
+          if (dayPnl > bestDay) bestDay = dayPnl;
+
+          // EOD Trailing Floor update at market close
+          if (!isIntraday) {
+            if (eq > peak) {
+              peak = eq;
+              floor = Math.max(floor, peak - maxDD);
+            }
+            if (record && log.length > 1) {
+              log[log.length - 1].fl = floor;
+            }
+            if (eq <= floor + 1e-6) {
+              return { passed: false, trades, days, finalEq: eq, log };
+            }
+          }
+
+          const endReq = consFrac < 0.999 ? Math.max(target, bestDay / consFrac) : target;
+          if (eq >= endReq && days >= minDays) {
+            return { passed: true, trades, days, finalEq: eq, log };
+          }
+        }
+
+        return { passed: false, trades, days, finalEq: eq, log };
+      }
+
+      function simulateFundedPath(cfg, risk, rr, pWinMain, rand, record) {
+        const maxDD = cfg.fundedDD;
+        const isIntraday = cfg.fundedDDType === "intraday";
+        const safetyNet = cfg.safetyNet;
+        const hasSafetyLock = safetyNet > 0;
+        const lockFloor = cfg.lockFloor;
+        const maxPayout = cfg.maxPayout;
+        const splitFrac = cfg.payoutSplit / 100;
+        const firstPayoutReq = cfg.firstPayoutReq;
+        const consFrac = cfg.fundedConsistency > 0 ? cfg.fundedConsistency / 100 : 1.0;
+        const minDays = cfg.fundedMinDays;
+        const minQualProfit = cfg.minQualProfit;
+        const maxTrDay = cfg.maxTradesDay;
+        const maxPayouts = cfg.maxPayouts;
+        const comm = cfg.commSlippage;
+
+        // 1:1 early safety-net compression parameters
+        const compressOn = cfg.compress1to1Toggle && hasSafetyLock;
+        const pWin1to1 = effectiveWinRate(cfg, 1.0, true);
+
+        const beOn = cfg.beTriggerToggle && isIntraday;
+        const beTrigAmt = cfg.beTriggerR * risk;
+        const beLockAmt = cfg.beLockOffset * risk;
+        const beClipProb = beOn ? Math.max(0.02, 0.34 * Math.exp(-1.7 * cfg.beTriggerR)) : 0;
+
+        let eq = 0;
+        let peak = 0;
+        let floor = -maxDD;
+        let floorLocked = false;
+        let payouts = 0;
+        let totalCash = 0;
+        let firstPayoutCash = 0;
+        let trades = 0;
+        let totalDays = 0;
+
+        // Per-payout-cycle trackers
+        let cycleStartEq = 0;
+        let cycleBestDay = 0;
+        let cycleDays = 0;
+        let cycleQualDays = 0;
+        const reqQualDays = minQualProfit > 0 ? Math.min(minDays, 5) : minDays;
+
+        const MAX_DAYS = 240;
+        const log = record ? [{ t: 0, day: 0, res: "FUNDED", mfe: 0, pnl: 0, eq: 0, fl: floor, locked: false, payout: false }] : null;
+
+        function updateFloor(newPeak) {
+          if (newPeak > peak) peak = newPeak;
+          if (hasSafetyLock) {
+            if (peak >= safetyNet) {
+              floorLocked = true;
+              floor = Math.max(floor, lockFloor);
+            } else if (!floorLocked) {
+              floor = Math.max(floor, Math.min(lockFloor, peak - maxDD));
+            }
+          } else {
+            // Topstep-style: trails up to $0, locks at $0 once peak >= maxDD or after 1st payout
+            if (peak >= maxDD || payouts >= 1) {
+              floorLocked = true;
+              floor = Math.max(floor, 0);
+            } else {
+              floor = Math.max(floor, Math.min(0, peak - maxDD));
+            }
+          }
+        }
+
+        while (payouts < maxPayouts && totalDays < MAX_DAYS) {
+          totalDays++;
+          cycleDays++;
+          let dayPnl = 0;
+
+          const baseCycleTarget = payouts === 0
+            ? firstPayoutReq
+            : Math.max(cycleStartEq + maxPayout, floor + maxPayout + 150);
+          const cycleProfit = eq - cycleStartEq;
+          const effTargetProfit = consFrac < 0.999
+            ? Math.max(baseCycleTarget - cycleStartEq, cycleBestDay / consFrac)
+            : (baseCycleTarget - cycleStartEq);
+
+          const profitReady = cycleProfit >= effTargetProfit - 1e-6 && eq >= baseCycleTarget - 1e-6;
+          const daysReady = cycleDays >= minDays && cycleQualDays >= reqQualDays;
+
+          // If profit & consistency met and only qualifying days remain: take small smart qualifying trade
+          if (profitReady && !daysReady) {
+            if (minQualProfit > 0 && cycleQualDays < reqQualDays) {
+              const miniReward = Math.min(risk * rr, minQualProfit + comm + 10);
+              const miniRisk = miniReward / rr;
+              trades++;
+              const prevEq = eq;
+              const isWin = rand() < pWinMain;
+              let mfe = 0;
+              let pnl = 0;
+              let tag = "QUAL LOSS";
+              if (isWin) {
+                mfe = miniReward;
+                if (isIntraday) updateFloor(prevEq + mfe);
+                pnl = miniReward - comm;
+                tag = "QUAL WIN";
+              } else {
+                mfe = sampleLossMfe(miniReward, cfg.mfeMeanFrac, rand);
+                if (isIntraday && mfe > 0) updateFloor(prevEq + mfe);
+                pnl = -(miniRisk + comm);
+              }
+              eq += pnl;
+              dayPnl += pnl;
+              if (record) log.push({ t: trades, day: totalDays, res: tag, mfe, pnl, eq, fl: floor, locked: floorLocked, payout: false });
+              if (eq <= floor + 1e-6) {
+                return { payouts, totalCash, firstPayoutCash, floorLocked, trades, busted: true, log };
+              }
+            }
+          } else {
+            // Normal trading session
+            for (let tr = 0; tr < maxTrDay; tr++) {
+              trades++;
+              const useCompressed = compressOn && !floorLocked;
+              const activeRR = useCompressed ? 1.0 : rr;
+              const activeP = useCompressed ? pWin1to1 : pWinMain;
+              const reward = risk * activeRR;
+
+              const prevEq = eq;
+              let mfe = 0;
+              let pnl = 0;
+              let resTag = "LOSS";
+              const isWin = rand() < activeP;
+
+              if (isWin) {
+                if (beOn && !floorLocked && rand() < beClipProb) {
+                  mfe = Math.min(reward, beTrigAmt);
+                  if (isIntraday) updateFloor(prevEq + mfe);
+                  pnl = beLockAmt - comm;
+                  resTag = "BE CLIP";
+                } else {
+                  mfe = reward;
+                  if (isIntraday) updateFloor(prevEq + mfe);
+                  pnl = reward - comm;
+                  resTag = useCompressed ? "WIN (1:1)" : "WIN";
+                }
+              } else {
+                mfe = sampleLossMfe(reward, cfg.mfeMeanFrac, rand);
+                if (isIntraday && mfe > 0) updateFloor(prevEq + mfe);
+                if (beOn && !floorLocked && mfe >= beTrigAmt) {
+                  pnl = beLockAmt - comm;
+                  resTag = "BE SAVED";
+                } else {
+                  pnl = -(risk + comm);
+                  resTag = "LOSS";
+                }
+              }
+
+              eq += pnl;
+              dayPnl += pnl;
+
+              if (record) {
+                log.push({ t: trades, day: totalDays, res: resTag, mfe, pnl, eq, fl: floor, locked: floorLocked, payout: false });
+              }
+
+              if (eq <= floor + 1e-6) {
+                return { payouts, totalCash, firstPayoutCash, floorLocked, trades, busted: true, log };
+              }
+
+              // Smart daily stop if hitting consistency ceiling for the base payout target
+              const safeDayCap = (baseCycleTarget - cycleStartEq) * consFrac;
+              if (consFrac < 0.999 && dayPnl >= safeDayCap - 1e-6) {
+                break;
+              }
+            }
+          }
+
+          // End-of-day bookkeeping
+          if (dayPnl > cycleBestDay) cycleBestDay = dayPnl;
+          if (dayPnl >= minQualProfit - 1e-6) cycleQualDays++;
+
+          if (!isIntraday) {
+            updateFloor(eq);
+            if (record && log.length > 1) {
+              log[log.length - 1].fl = floor;
+              log[log.length - 1].locked = floorLocked;
+            }
+            if (eq <= floor + 1e-6) {
+              return { payouts, totalCash, firstPayoutCash, floorLocked, trades, busted: true, log };
+            }
+          }
+
+          // Payout eligibility check
+          const curCycProf = eq - cycleStartEq;
+          const curReqProf = consFrac < 0.999
+            ? Math.max(baseCycleTarget - cycleStartEq, cycleBestDay / consFrac)
+            : (baseCycleTarget - cycleStartEq);
+
+          if (curCycProf >= curReqProf - 1e-6 && eq >= baseCycleTarget - 1e-6 && cycleDays >= minDays && cycleQualDays >= reqQualDays) {
+            payouts++;
+            const netCash = maxPayout * splitFrac;
+            totalCash += netCash;
+            if (payouts === 1) firstPayoutCash = netCash;
+            eq -= maxPayout;
+            if (!hasSafetyLock) {
+              floorLocked = true;
+              floor = Math.max(floor, 0);
+            }
+            if (record) {
+              log.push({ t: trades, day: totalDays, res: `PAYOUT #${payouts}`, mfe: 0, pnl: -maxPayout, eq, fl: floor, locked: floorLocked, payout: true });
+            }
+            cycleStartEq = eq;
+            cycleBestDay = 0;
+            cycleDays = 0;
+            cycleQualDays = 0;
+          }
+        }
+
+        return { payouts, totalCash, firstPayoutCash, floorLocked, trades, busted: false, log };
+      }
+
+      // -----------------------------------------------------------------------
+      // 7. BATCH MONTE CARLO RUNNERS
+      // -----------------------------------------------------------------------
+      function runEvalBatch(cfg, risk, rr, runs, seedOff = 0, keepSamples = 0, constExp = true) {
+        const rand = mulberry32(appState.seed + 107 + seedOff);
+        const pWin = effectiveWinRate(cfg, rr, constExp);
+        let passes = 0;
+        let sumTrades = 0;
+        const samples = [];
+
+        for (let i = 0; i < runs; i++) {
+          const rec = i < keepSamples;
+          const r = simulateEvalPath(cfg, risk, rr, pWin, rand, rec);
+          if (r.passed) {
+            passes++;
+            sumTrades += r.trades;
+          }
+          if (rec) samples.push(r);
+        }
+        const passRate = passes / runs;
+        const costToFund = passRate > 0.0005 ? (cfg.evalFee / passRate) + cfg.activationFee : Infinity;
+        return { passRate, costToFund, avgPassTrades: passes ? sumTrades / passes : 0, pWin, samples };
+      }
+
+      function runFundedBatch(cfg, risk, rr, runs, seedOff = 0, keepSamples = 0, constExp = true) {
+        const rand = mulberry32(appState.seed + 521 + seedOff);
+        const pWin = effectiveWinRate(cfg, rr, constExp);
+        let lockedCnt = 0;
+        let pay1Cnt = 0;
+        let pay2Cnt = 0;
+        let pay3Cnt = 0;
+        let sumCash = 0;
+        let sumPay1Cash = 0;
+        let sumPayouts = 0;
+        const samples = [];
+
+        for (let i = 0; i < runs; i++) {
+          const rec = i < keepSamples;
+          const r = simulateFundedPath(cfg, risk, rr, pWin, rand, rec);
+          if (r.floorLocked) lockedCnt++;
+          if (r.payouts >= 1) pay1Cnt++;
+          if (r.payouts >= 2) pay2Cnt++;
+          if (r.payouts >= 3) pay3Cnt++;
+          sumCash += r.totalCash;
+          sumPay1Cash += r.firstPayoutCash;
+          sumPayouts += r.payouts;
+          if (rec) samples.push(r);
+        }
+
+        return {
+          lockRate: lockedCnt / runs,
+          pay1Rate: pay1Cnt / runs,
+          pay2Rate: pay2Cnt / runs,
+          pay3Rate: pay3Cnt / runs,
+          expTotalCash: sumCash / runs,
+          expPay1Cash: sumPay1Cash / runs,
+          expSubsequentCash: (sumCash - sumPay1Cash) / runs,
+          avgPayouts: sumPayouts / runs,
+          pWin,
+          samples
+        };
+      }
+
+      // -----------------------------------------------------------------------
+      // 8. FULL SIMULATION ORCHESTRATOR
+      // -----------------------------------------------------------------------
+      function runAllAnalytics(showConfirmToast = false) {
+        const cfg = getConfig();
+        syncSidebarReadouts();
+
+        const evalRes = runEvalBatch(cfg, cfg.evalRisk, cfg.baseRR, cfg.simCount, 0, 40, true);
+        const fundedRes = runFundedBatch(cfg, cfg.fundedRisk, cfg.baseRR, cfg.simCount, 0, 40, true);
+
+        const netEv = fundedRes.expTotalCash - evalRes.costToFund;
+        const roi = (Number.isFinite(evalRes.costToFund) && evalRes.costToFund > 0)
+          ? netEv / evalRes.costToFund
+          : -1;
+        const evPerEval = Number.isFinite(netEv) ? evalRes.passRate * netEv : -cfg.evalFee;
+
+        appState.lastSim = { cfg, evalRes, fundedRes, netEv, roi, evPerEval };
+        appState.evalSamples = evalRes.samples;
+        appState.fundedSamples = fundedRes.samples;
+        if (appState.pbPathIdx >= 40) appState.pbPathIdx = 0;
+
+        renderOverviewTab(appState.lastSim);
+        updateQuickCompareDelta(cfg, fundedRes);
+        renderPlaybackView();
+
+        // Update Optimizer & Copy Stress Test cleanly
+        runOptimizerGrid();
+        runCopyStressTest();
+
+        if (showConfirmToast) {
+          toast(`Simulation complete (${cfg.simCount.toLocaleString()} runs) — Net EV: ${fmtMoney(netEv, true)}`);
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 9. TAB 1: EV OVERVIEW, ALERTS, FUNNEL, COST VS PAYOUTS, QUANT VERDICT
+      // -----------------------------------------------------------------------
+      function renderOverviewTab(sim) {
+        const { cfg, evalRes, fundedRes, netEv, roi, evPerEval } = sim;
+
+        // 6 KPI Cards
+        const isPos = Number.isFinite(netEv) && netEv >= 0;
+        $("kpiNetEv").textContent = Number.isFinite(netEv) ? fmtMoney(netEv, true) : "Bust";
+        $("kpiNetEv").className = "kpi-val " + (isPos ? "text-emerald" : "text-rose");
+        $("kpiNetEvCard").className = "kpi-card " + (isPos ? "pos" : "neg");
+        $("kpiEvPerEval").textContent = "EV/Eval: " + fmtMoney(evPerEval, true);
+
+        $("kpiRoi").textContent = Number.isFinite(roi) ? ((roi >= 0 ? "+" : "") + (roi * 100).toFixed(0) + "%") : "-100%";
+        $("kpiRoi").className = "kpi-val " + (roi >= 0 ? "text-emerald" : "text-rose");
+        $("kpiRoiCard").className = "kpi-card " + (roi >= 0 ? "pos" : "neg");
+        $("kpiPerDollar").textContent = Number.isFinite(roi) ? `${roi >= 0 ? "+" : ""}$${roi.toFixed(2)} / $1 fee` : "—";
+
+        $("kpiPassRate").textContent = fmtPct(evalRes.passRate, 1);
+        const avgEvals = evalRes.passRate > 0 ? 1 / evalRes.passRate : Infinity;
+        $("kpiAvgEvals").textContent = Number.isFinite(avgEvals) ? `~${avgEvals.toFixed(1)} evals/PA` : "∞ evals";
+
+        $("kpiFundCost").textContent = Number.isFinite(evalRes.costToFund) ? fmtMoney(evalRes.costToFund) : "∞";
+        $("kpiEvalPortion").textContent = Number.isFinite(avgEvals)
+          ? `Evals: ${fmtMoney(avgEvals * cfg.evalFee)} + Act: ${fmtMoney(cfg.activationFee)}`
+          : "Pass rate too low";
+
+        $("kpiPay1Rate").textContent = fmtPct(fundedRes.pay1Rate, 1);
+        $("kpiLockRate").textContent = `Safety Lock: ${fmtPct(fundedRes.lockRate, 1)}`;
+
+        $("kpiExpPayout").textContent = fmtMoney(fundedRes.expTotalCash);
+        $("kpiAvgPayouts").textContent = `Avg ${fundedRes.avgPayouts.toFixed(2)} payouts`;
+        $("funnelSampleTag").textContent = `n = ${cfg.simCount.toLocaleString()} runs`;
+
+        // Compliance & Edge Alerts Banner
+        renderComplianceAlerts(cfg);
+
+        // Charts
+        drawLifecycleFunnel(sim);
+        drawCostVsPayouts(sim);
+
+        // Plain-English Quant Verdict
+        renderQuantVerdict(sim);
+      }
+
+      function renderComplianceAlerts(cfg) {
+        const alerts = [];
+
+        // 1. MAE Cap Check
+        if (cfg.maeCap > 0 && cfg.fundedRisk > cfg.maeCap) {
+          alerts.push({
+            type: "error",
+            icon: "&#9888;",
+            html: `<strong>MAE Cap Violation:</strong> Funded Risk (${fmtMoney(cfg.fundedRisk)}) breaches the ${fmtMoney(cfg.maeCap)} MAE single-trade loss cap by ${fmtMoney(cfg.fundedRisk - cfg.maeCap)}. Reduce funded risk below ${fmtMoney(cfg.maeCap)} to protect payout eligibility.`
+          });
+        }
+
+        // 2. DLL Check
+        if (cfg.evalDLL > 0 && cfg.evalRisk > cfg.evalDLL) {
+          alerts.push({
+            type: "error",
+            icon: "&#9888;",
+            html: `<strong>Eval DLL Violation:</strong> Eval Risk (${fmtMoney(cfg.evalRisk)}) exceeds Daily Loss Limit (${fmtMoney(cfg.evalDLL)}).`
+          });
+        }
+
+        // 3. Funded Consistency Inflation Trap
+        const fundedWin = cfg.fundedRisk * cfg.baseRR;
+        if (cfg.fundedConsistency > 0) {
+          const maxSafeDay = cfg.firstPayoutReq * (cfg.fundedConsistency / 100);
+          if (fundedWin > maxSafeDay + 1) {
+            const inflated = fundedWin / (cfg.fundedConsistency / 100);
+            alerts.push({
+              type: "warn",
+              icon: "&#9888;",
+              html: `<strong>Funded Consistency Trap:</strong> One ${fmtMoney(fundedWin)} win exceeds ${cfg.fundedConsistency}% of ${fmtMoney(cfg.firstPayoutReq)} (${fmtMoney(maxSafeDay)}), inflating required profit to <strong>${fmtMoney(inflated)}</strong> (+${fmtMoney(inflated - cfg.firstPayoutReq)} extra).`
+            });
+          }
+        }
+
+        // 4. Eval Consistency Inflation Trap
+        const evalWin = cfg.evalRisk * cfg.baseRR;
+        if (cfg.evalConsistency > 0) {
+          const maxSafeEvalDay = cfg.evalTarget * (cfg.evalConsistency / 100);
+          if (evalWin > maxSafeEvalDay + 1) {
+            const inflatedEval = evalWin / (cfg.evalConsistency / 100);
+            alerts.push({
+              type: "warn",
+              icon: "&#9888;",
+              html: `<strong>Eval Consistency Trap:</strong> One ${fmtMoney(evalWin)} eval win exceeds ${cfg.evalConsistency}% (${fmtMoney(maxSafeEvalDay)}), pushing required target from ${fmtMoney(cfg.evalTarget)} to <strong>${fmtMoney(inflatedEval)}</strong>.`
+            });
+          }
+        }
+
+        // 5. Small-Size Trailing DD Bleed Warning
+        if (cfg.fundedRisk < cfg.fundedDD * 0.14) {
+          alerts.push({
+            type: "warn",
+            icon: "&#128201;",
+            html: `<strong>Small-Sizing Trailing Bleed:</strong> Funded risk (${fmtMoney(cfg.fundedRisk)} = ${((cfg.fundedRisk / cfg.fundedDD) * 100).toFixed(0)}% of DD) forces excessive steps, dragging survival toward the random-walk floor.`
+          });
+        }
+
+        // 6. All Clear
+        if (alerts.length === 0) {
+          alerts.push({
+            type: "ok",
+            icon: "&#10004;",
+            html: `<strong>Rule Compliant &amp; Structurally Clean:</strong> Both Eval (${fmtMoney(cfg.evalRisk)}) and Funded (${fmtMoney(cfg.fundedRisk)}) sizing clear MAE caps, Daily Loss Limits, and consistency traps.`
+          });
+        }
+
+        $("alertsBanner").innerHTML = alerts.map((a) => `
+          <div class="alert-pill ${a.type}">
+            <span class="alert-icon">${a.icon}</span>
+            <span>${a.html}</span>
+          </div>
+        `).join("");
+      }
+
+      function renderQuantVerdict(sim) {
+        const { cfg, evalRes, fundedRes, netEv, roi } = sim;
+        const rwEval = Math.exp(-cfg.evalTarget / cfg.evalDD);
+        const passDiff = (evalRes.passRate - rwEval) * 100;
+        const isPos = Number.isFinite(netEv) && netEv >= 0;
+
+        $("quantVerdictBox").className = "verdict-box" + (isPos ? "" : " neg");
+        $("verdictHeadline").innerHTML = isPos
+          ? `<span class="text-emerald">&#10004; Positive Structural EV (${fmtMoney(netEv, true)} / Funded Cycle)</span>`
+          : `<span class="text-rose">&#9888; Negative EV Structure (${fmtMoney(netEv, true)} / Funded Cycle)</span>`;
+        $("verdictBaselineTag").textContent = `Random-Walk e^(-T/D): ${fmtPct(rwEval, 1)} | Your Eval Pass: ${fmtPct(evalRes.passRate, 1)} (${passDiff >= 0 ? "+" : ""}${passDiff.toFixed(1)} pts)`;
+
+        // Identify #1 bottleneck
+        let bottleneck = "";
+        if (cfg.maeCap > 0 && cfg.fundedRisk > cfg.maeCap) {
+          bottleneck = `Your #1 immediate fix is compliance: drop Funded Risk to or below the ${fmtMoney(cfg.maeCap)} MAE Cap.`;
+        } else if (cfg.fundedDDType === "intraday" && fundedRes.lockRate < 0.35) {
+          bottleneck = `Your #1 bottleneck is <strong>Intraday Unrealized Trailing DD</strong> eroding buffer before the ${fmtMoney(cfg.safetyNet)} safety net locks (${fmtPct(fundedRes.lockRate, 1)} lock rate). Test flipping to <strong>EOD</strong> or enabling <strong>Late-Stage BE / 1:1 Compression</strong> in Tab 3.`;
+        } else if (cfg.fundedRisk < cfg.fundedDD * 0.14) {
+          bottleneck = `Your #1 bottleneck is <strong>undersized risk (${fmtMoney(cfg.fundedRisk)})</strong>. Open the 2D Optimizer (Tab 2) to size up and beat trailing drawdown drag.`;
+        } else if (!isPos) {
+          bottleneck = `At ${cfg.winRate.toFixed(1)}% WR (${cfg.liveExpR.toFixed(3)}R live edge), fee-to-payout friction exceeds your pass/payout odds. Check Tab 2 for higher-EV sizing or compare lower-fee EOD presets.`;
+        } else {
+          bottleneck = `Even with ${cfg.liveExpR <= 0.005 ? "zero live-market edge" : `a modest +${cfg.liveExpR.toFixed(3)}R live edge`}, the call-option fee asymmetry (${fmtMoney(evalRes.costToFund)} cost vs. ${fmtMoney(fundedRes.expTotalCash)} expected cash) delivers <strong>+${(roi * 100).toFixed(0)}% ROI</strong>. Focus next on Tab 4 to avoid copy-trading correlation wipeouts.`;
+        }
+
+        $("verdictBody").innerHTML = `Your evaluation sizing (${fmtMoney(cfg.evalRisk)} @ ${cfg.baseRR}R) passes at <strong>${fmtPct(evalRes.passRate, 1)}</strong> versus the continuous small-bet baseline of <strong>${fmtPct(rwEval, 1)}</strong>. Once funded, <strong>${fmtPct(fundedRes.pay1Rate, 1)}</strong> of accounts reach Payout #1 and average <strong>${fundedRes.avgPayouts.toFixed(2)}</strong> lifetime payouts. ${bottleneck}`;
+      }
+
+      // -----------------------------------------------------------------------
+      // 10. HIGH-DPI CANVAS HELPER & TAB 1 CHARTS
+      // -----------------------------------------------------------------------
+      function prepCanvas(canvas, cssHeight) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const parentW = canvas.parentElement ? canvas.parentElement.clientWidth - 24 : 500;
+        const w = Math.max(240, Math.floor(parentW));
+        const h = cssHeight;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { ctx, w, h };
+      }
+
+      function drawLifecycleFunnel(sim) {
+        const canvas = $("funnelCanvas");
+        if (!canvas || canvas.offsetParent === null) return;
+        const { ctx, w, h } = prepCanvas(canvas, 250);
+        const { cfg, evalRes, fundedRes } = sim;
+
+        // Conditional & absolute survival probabilities from Eval Start
+        const pPass = evalRes.passRate;
+        const stages = [
+          { label: "Eval Start", pct: 1.0, sub: "100%", col: "#334155" },
+          { label: "Eval Pass", pct: pPass, sub: fmtPct(pPass, 1), col: "#06b6d4" },
+          { label: "Floor Lock", pct: pPass * fundedRes.lockRate, sub: `${fmtPct(fundedRes.lockRate, 0)} of PA`, col: "#0ea5e9" },
+          { label: "Payout #1", pct: pPass * fundedRes.pay1Rate, sub: `${fmtPct(fundedRes.pay1Rate, 0)} of PA`, col: "#10b981" }
+        ];
+        if (cfg.maxPayouts >= 2) {
+          stages.push({ label: "Payout #2", pct: pPass * fundedRes.pay2Rate, sub: `${fmtPct(fundedRes.pay2Rate, 0)} of PA`, col: "#34d399" });
+        }
+        if (cfg.maxPayouts >= 3) {
+          stages.push({ label: "Payout #3+", pct: pPass * fundedRes.pay3Rate, sub: `${fmtPct(fundedRes.pay3Rate, 0)} of PA`, col: "#6ee7b7" });
+        }
+
+        ctx.clearRect(0, 0, w, h);
+        const padL = 86, padR = 78, padT = 14, padB = 14;
+        const plotW = Math.max(80, w - padL - padR);
+        const rowH = (h - padT - padB) / stages.length;
+
+        stages.forEach((st, idx) => {
+          const y = padT + idx * rowH;
+          const barH = Math.min(26, rowH * 0.62);
+          const barY = y + (rowH - barH) / 2;
+
+          // Track background
+          ctx.fillStyle = "rgba(30, 41, 59, 0.55)";
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(padL, barY, plotW, barH, 6) : ctx.rect(padL, barY, plotW, barH);
+          ctx.fill();
+
+          // Filled bar (sqrt scaled slightly for visual clarity while showing exact % label)
+          const bw = Math.max(4, st.pct * plotW);
+          ctx.fillStyle = st.col;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(padL, barY, bw, barH, 6) : ctx.rect(padL, barY, bw, barH);
+          ctx.fill();
+
+          // Left Label
+          ctx.fillStyle = "#cbd5e1";
+          ctx.font = "600 11px -apple-system, Inter, sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(st.label, padL - 10, barY + barH * 0.66);
+
+          // Right Value Label
+          ctx.fillStyle = "#f1f5f9";
+          ctx.font = "700 11px ui-monospace, Menlo, monospace";
+          ctx.textAlign = "left";
+          ctx.fillText(fmtPct(st.pct, 1), padL + plotW + 8, barY + barH * 0.45);
+          ctx.fillStyle = "#64748b";
+          ctx.font = "500 10px ui-monospace, Menlo, monospace";
+          ctx.fillText(st.sub, padL + plotW + 8, barY + barH * 0.88);
+        });
+      }
+
+      function drawCostVsPayouts(sim) {
+        const canvas = $("costPayCanvas");
+        if (!canvas || canvas.offsetParent === null) return;
+        const { ctx, w, h } = prepCanvas(canvas, 250);
+        const { cfg, evalRes, fundedRes, netEv } = sim;
+
+        const evalCostPortion = evalRes.passRate > 0 ? cfg.evalFee / evalRes.passRate : 0;
+        const actCost = cfg.activationFee;
+        const totalCost = Number.isFinite(evalRes.costToFund) ? evalRes.costToFund : 0;
+        const pay1 = fundedRes.expPay1Cash;
+        const paySub = fundedRes.expSubsequentCash;
+        const totalPay = fundedRes.expTotalCash;
+
+        const maxVal = Math.max(totalCost, totalPay, Math.abs(netEv), 200) * 1.22;
+        ctx.clearRect(0, 0, w, h);
+
+        const padL = 56, padR = 16, padT = 26, padB = 38;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const yOf = (v) => padT + (1 - v / maxVal) * plotH;
+
+        // Horizontal gridlines
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
+        ctx.fillStyle = "#64748b";
+        ctx.font = "10.5px ui-monospace, Menlo, monospace";
+        for (let i = 0; i <= 4; i++) {
+          const val = (maxVal * i) / 4;
+          const py = yOf(val);
+          ctx.beginPath();
+          ctx.moveTo(padL, py);
+          ctx.lineTo(w - padR, py);
+          ctx.stroke();
+          ctx.textAlign = "right";
+          ctx.fillText(fmtMoney(val), padL - 7, py + 3);
+        }
+
+        const barW = Math.min(68, plotW / 4.2);
+        const cx1 = padL + plotW * 0.22;
+        const cx2 = padL + plotW * 0.52;
+        const cx3 = padL + plotW * 0.82;
+        const baseY = padT + plotH;
+
+        // Bar 1: Cost to Fund (Stacked: Evals + Activation)
+        const hAct = (actCost / maxVal) * plotH;
+        const hEval = (evalCostPortion / maxVal) * plotH;
+        ctx.fillStyle = "#f59e0b";
+        ctx.fillRect(cx1 - barW / 2, baseY - hAct, barW, hAct);
+        ctx.fillStyle = "#f43f5e";
+        ctx.fillRect(cx1 - barW / 2, baseY - hAct - hEval, barW, hEval);
+
+        // Bar 2: Expected Payouts (Stacked: Payout #1 + Payout #2+)
+        const hP1 = (pay1 / maxVal) * plotH;
+        const hPSub = (paySub / maxVal) * plotH;
+        ctx.fillStyle = "#06b6d4";
+        ctx.fillRect(cx2 - barW / 2, baseY - hP1, barW, hP1);
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(cx2 - barW / 2, baseY - hP1 - hPSub, barW, hPSub);
+
+        // Bar 3: Net EV (magnitude bar colored emerald/rose)
+        const absEv = Math.min(maxVal, Math.abs(netEv));
+        const hEv = (absEv / maxVal) * plotH;
+        ctx.fillStyle = netEv >= 0 ? "#10b981" : "#f43f5e";
+        ctx.fillRect(cx3 - barW / 2, baseY - hEv, barW, hEv);
+
+        // Bar top values & bottom labels
+        ctx.textAlign = "center";
+        ctx.font = "700 11px ui-monospace, Menlo, monospace";
+        ctx.fillStyle = "#fda4af";
+        ctx.fillText(fmtMoney(totalCost), cx1, baseY - hAct - hEval - 6);
+        ctx.fillStyle = "#6ee7b7";
+        ctx.fillText(fmtMoney(totalPay), cx2, baseY - hP1 - hPSub - 6);
+        ctx.fillStyle = netEv >= 0 ? "#10b981" : "#f43f5e";
+        ctx.fillText(fmtMoney(netEv, true), cx3, baseY - hEv - 6);
+
+        ctx.fillStyle = "#cbd5e1";
+        ctx.font = "600 11px -apple-system, Inter, sans-serif";
+        ctx.fillText("Cost to Fund", cx1, baseY + 16);
+        ctx.fillText("Exp. Payouts", cx2, baseY + 16);
+        ctx.fillText("Net EV", cx3, baseY + 16);
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "10px -apple-system, Inter, sans-serif";
+        ctx.fillText("Evals + Act", cx1, baseY + 30);
+        ctx.fillText("Pay 1 + Pay 2+", cx2, baseY + 30);
+        ctx.fillText(netEv >= 0 ? "Surplus" : "Deficit", cx3, baseY + 30);
+      }
+
+      // -----------------------------------------------------------------------
+      // 11. TAB 2: JJ SIMON 2D RISK x R:R OPTIMIZER HEATMAP
+      // -----------------------------------------------------------------------
+      const OPT_RISKS = [150, 250, 350, 500, 650, 750, 1000, 1250, 1500];
+      const OPT_RRS = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0];
+
+      function runOptimizerGrid() {
+        const cfg = getConfig();
+        const constExp = $("constExpToggle").checked;
+        const gridRuns = 450;
+
+        $("optFormulaBadge").textContent = constExp
+          ? `Constant Expectancy: p(R) = (1 + ${cfg.liveExpR.toFixed(3)}) / (R + 1)`
+          : `Fixed Win Rate Mode: ${cfg.winRate.toFixed(1)}% across all R:R`;
+
+        // 1. Scan Eval Grid
+        let bestEval = { risk: cfg.evalRisk, rr: cfg.baseRR, costToFund: Infinity, passRate: 0, legal: true };
+        const evalGrid = [];
+        for (let r = 0; r < OPT_RRS.length; r++) {
+          const rr = OPT_RRS[r];
+          const row = [];
+          for (let c = 0; c < OPT_RISKS.length; c++) {
+            const risk = OPT_RISKS[c];
+            const violatesDll = cfg.evalDLL > 0 && risk > cfg.evalDLL;
+            const exceedsDD = risk >= cfg.evalDD;
+            const legal = !violatesDll && !exceedsDD;
+            const lockReason = violatesDll ? `Breaches ${fmtMoney(cfg.evalDLL)} Eval DLL` : (exceedsDD ? "Exceeds Max DD" : "");
+            let cell;
+            if (!legal) {
+              cell = { risk, rr, legal: false, lockReason, passRate: 0, costToFund: Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
+            } else {
+              const res = runEvalBatch(cfg, risk, rr, gridRuns, r * 37 + c * 13, 0, constExp);
+              cell = { risk, rr, legal: true, lockReason: "", passRate: res.passRate, costToFund: res.costToFund, pWin: res.pWin };
+              if (cell.costToFund < bestEval.costToFund) bestEval = cell;
+            }
+            row.push(cell);
+          }
+          evalGrid.push(row);
+        }
+
+        // 2. Scan Funded Grid
+        let bestFunded = { risk: cfg.fundedRisk, rr: cfg.baseRR, expTotalCash: -1, pay1Rate: 0, netEv: -Infinity, legal: true };
+        const fundedGrid = [];
+        for (let r = 0; r < OPT_RRS.length; r++) {
+          const rr = OPT_RRS[r];
+          const row = [];
+          for (let c = 0; c < OPT_RISKS.length; c++) {
+            const risk = OPT_RISKS[c];
+            const violatesMae = cfg.maeCap > 0 && risk > cfg.maeCap;
+            const exceedsDD = risk >= cfg.fundedDD;
+            const legal = !violatesMae && !exceedsDD;
+            const lockReason = violatesMae ? `Breaches ${fmtMoney(cfg.maeCap)} MAE Cap` : (exceedsDD ? "Exceeds Funded DD" : "");
+            let cell;
+            if (!legal) {
+              cell = { risk, rr, legal: false, lockReason, pay1Rate: 0, expTotalCash: 0, netEv: -Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
+            } else {
+              const res = runFundedBatch(cfg, risk, rr, gridRuns, r * 53 + c * 19, 0, constExp);
+              const netEv = res.expTotalCash - bestEval.costToFund;
+              cell = {
+                risk,
+                rr,
+                legal: true,
+                lockReason: "",
+                pay1Rate: res.pay1Rate,
+                expTotalCash: res.expTotalCash,
+                netEv,
+                costToFund: bestEval.costToFund,
+                pWin: res.pWin
+              };
+              if (cell.netEv > bestFunded.netEv) bestFunded = cell;
+            }
+            row.push(cell);
+          }
+          fundedGrid.push(row);
+        }
+
+        appState.lastOpt = { evalGrid, fundedGrid, bestEval, bestFunded, cfg, constExp };
+        renderHeatmapTable();
+      }
+
+      function renderHeatmapTable() {
+        if (!appState.lastOpt) return;
+        const { evalGrid, fundedGrid, bestEval, bestFunded, cfg, constExp } = appState.lastOpt;
+        const isEval = appState.optPhase === "eval";
+        const grid = isEval ? evalGrid : fundedGrid;
+        const best = isEval ? bestEval : bestFunded;
+
+        // Scale bounds
+        let minV = Infinity, maxV = -Infinity;
+        for (const row of grid) {
+          for (const cell of row) {
+            if (!cell.legal) continue;
+            const v = isEval ? -cell.costToFund : cell.netEv;
+            if (Number.isFinite(v)) {
+              if (v < minV) minV = v;
+              if (v > maxV) maxV = v;
+            }
+          }
+        }
+        if (!Number.isFinite(minV)) { minV = -200; maxV = 200; }
+
+        const tbl = $("heatmapTable");
+        tbl.style.gridTemplateColumns = `78px repeat(${OPT_RISKS.length}, minmax(60px, 1fr))`;
+
+        let html = `<div class="hm-hdr">R:R \\ Risk</div>`;
+        OPT_RISKS.forEach((r) => { html += `<div class="hm-hdr">${fmtMoney(r)}</div>`; });
+
+        for (let r = 0; r < OPT_RRS.length; r++) {
+          const rr = OPT_RRS[r];
+          const pEff = effectiveWinRate(cfg, rr, constExp);
+          html += `<div class="hm-row-lbl"><span>${rr.toFixed(2).replace(/0$/, "")}R</span><small>${fmtPct(pEff, 0)} WR</small></div>`;
+
+          for (let c = 0; c < OPT_RISKS.length; c++) {
+            const cell = grid[r][c];
+            const isOpt = cell.legal && cell.risk === best.risk && cell.rr === best.rr;
+            const isCur = isEval
+              ? (Math.abs(cell.risk - cfg.evalRisk) < 1 && Math.abs(cell.rr - cfg.baseRR) < 0.01)
+              : (Math.abs(cell.risk - cfg.fundedRisk) < 1 && Math.abs(cell.rr - cfg.baseRR) < 0.01);
+
+            const cls = ["hm-cell"];
+            if (isOpt) cls.push("optimal");
+            if (isCur) cls.push("current");
+            if (!cell.legal) cls.push("locked");
+
+            let bg = "";
+            let vTxt = "";
+            let sTxt = "";
+
+            if (!cell.legal) {
+              vTxt = "&#128274;";
+              sTxt = "Locked";
+            } else if (isEval) {
+              const v = -cell.costToFund;
+              const norm = maxV > minV ? ((v - minV) / (maxV - minV)) * 2 - 1 : 0;
+              bg = heatColor(norm);
+              vTxt = Number.isFinite(cell.costToFund) ? fmtMoney(cell.costToFund) : "∞";
+              sTxt = fmtPct(cell.passRate, 0);
+            } else {
+              const scale = Math.max(Math.abs(maxV), Math.abs(minV), 60);
+              bg = heatColor(cell.netEv / scale);
+              vTxt = fmtMoney(cell.netEv, true);
+              sTxt = fmtPct(cell.pay1Rate, 0);
+            }
+
+            html += `<div class="${cls.join(" ")}" style="${cell.legal ? `background:${bg};` : ""}" data-r="${r}" data-c="${c}">
+              <span class="hm-v">${vTxt}</span>
+              <span class="hm-s">${sTxt}</span>
+            </div>`;
+          }
+        }
+        tbl.innerHTML = html;
+
+        // Wire cell hover tooltip & click
+        tbl.querySelectorAll(".hm-cell").forEach((el) => {
+          const r = parseInt(el.dataset.r, 10);
+          const c = parseInt(el.dataset.c, 10);
+          const cell = grid[r][c];
+
+          el.addEventListener("mouseenter", () => {
+            const targetAmt = cell.risk * cell.rr;
+            let body = "";
+            let ex = "";
+            if (!cell.legal) {
+              body = `Rule Lockout: ${cell.lockReason}. Risking ${fmtMoney(cell.risk)} violates firm compliance.`;
+              ex = "Choose a lower risk column inside legal limits.";
+            } else if (isEval) {
+              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | Eval Pass Rate: ${fmtPct(cell.passRate, 1)} | Expected Cost to Funded: ${fmtMoney(cell.costToFund)}.`;
+              ex = "Click cell to apply Eval Risk & Baseline R:R.";
+            } else {
+              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | 1st Payout Rate: ${fmtPct(cell.pay1Rate, 1)} | Cost to Funded: ${fmtMoney(cell.costToFund)} | Net EV: ${fmtMoney(cell.netEv, true)}.`;
+              ex = "Click cell to apply Funded Risk & Baseline R:R.";
+            }
+            showTooltipForElement(el, `Risk ${fmtMoney(cell.risk)} × ${cell.rr}R`, body, ex);
+          });
+          el.addEventListener("mouseleave", hideTooltip);
+
+          el.addEventListener("click", () => {
+            if (!cell.legal) {
+              toast(`Locked: ${cell.lockReason}`, "err");
+              return;
+            }
+            // Adjust win rate cleanly if constant-expectancy is on so the user's skill stays preserved at the new R:R
+            if (constExp && Math.abs(cell.rr - cfg.baseRR) > 0.01) {
+              $("baseRR").value = cell.rr;
+              $("winRate").value = (cell.pWin * 100).toFixed(1);
+            } else {
+              $("baseRR").value = cell.rr;
+            }
+            if (isEval) $("evalRisk").value = cell.risk;
+            else $("fundedRisk").value = cell.risk;
+            hideTooltip();
+            runAllAnalytics(false);
+            toast(`Applied ${isEval ? "Eval" : "Funded"} ${fmtMoney(cell.risk)} @ ${cell.rr}R`);
+          });
+        });
+
+        // Update Summary Card
+        $("optBestEval").textContent = `${fmtMoney(bestEval.risk)} @ ${bestEval.rr}R`;
+        $("optBestEvalSub").textContent = `Pass ${fmtPct(bestEval.passRate, 1)} | Cost ${fmtMoney(bestEval.costToFund)}`;
+        $("optBestFunded").textContent = `${fmtMoney(bestFunded.risk)} @ ${bestFunded.rr}R`;
+        $("optBestFundedSub").textContent = `1st Pay ${fmtPct(bestFunded.pay1Rate, 1)} | Cash ${fmtMoney(bestFunded.expTotalCash)}`;
+        $("optBestEv").textContent = fmtMoney(bestFunded.netEv, true);
+        $("optBestEv").className = "opt-item-val " + (bestFunded.netEv >= 0 ? "text-emerald" : "text-rose");
+        const curEv = appState.lastSim ? appState.lastSim.netEv : 0;
+        const delta = bestFunded.netEv - curEv;
+        $("optEvDelta").textContent = delta > 2 ? `+${fmtMoney(delta)} uplift vs. current` : "At/near optimal frontier";
+      }
+
+      function heatColor(norm) {
+        const c = Math.max(-1, Math.min(1, norm));
+        if (c >= 0) return `rgba(16, 185, 129, ${(0.12 + c * 0.52).toFixed(2)})`;
+        return `rgba(244, 63, 94, ${(0.12 + (-c) * 0.48).toFixed(2)})`;
+      }
+
+      // -----------------------------------------------------------------------
+      // 12. TAB 3: MONTE CARLO & TRAILING DD FLOOR PLAYBACK
+      // -----------------------------------------------------------------------
+      function updateQuickCompareDelta(cfg, currentFundedRes) {
+        // Compute quick delta against opposite DD type to show concrete impact
+        const altCfg = Object.assign({}, cfg, {
+          fundedDDType: cfg.fundedDDType === "intraday" ? "eod" : "intraday"
+        });
+        const altRes = runFundedBatch(altCfg, altCfg.fundedRisk, altCfg.baseRR, 600, 777, 0, true);
+        const diffPts = (altRes.pay1Rate - currentFundedRes.pay1Rate) * 100;
+        const altLabel = altCfg.fundedDDType === "eod" ? "EOD" : "Intraday";
+        const cls = diffPts >= 0 ? "text-emerald" : "text-rose";
+        $("qcDeltaReadout").innerHTML = `1st Payout Rate: <strong class="text-cyan">${fmtPct(currentFundedRes.pay1Rate, 1)}</strong> | Switching to ${altLabel}: <strong class="${cls}">${diffPts >= 0 ? "+" : ""}${diffPts.toFixed(1)} pts</strong>`;
+      }
+
+      function renderPlaybackView() {
+        const isSingle = appState.pbView === "single";
+        $("singlePlaybackBar").style.display = isSingle ? "flex" : "none";
+        $("tradeLogSection").style.display = isSingle ? "block" : "none";
+        $("spaghettiHistWrap").style.display = isSingle ? "none" : "block";
+
+        if (isSingle) {
+          drawSinglePlaybackCanvas();
+          renderTradeLog();
+        } else {
+          drawSpaghettiCanvas();
+          drawOutcomeHistogram();
+        }
+      }
+
+      function getSelectedSample() {
+        const arr = appState.pbPhase === "eval" ? appState.evalSamples : appState.fundedSamples;
+        if (!arr || !arr.length) return null;
+        return arr[appState.pbPathIdx % arr.length];
+      }
+
+      function drawSinglePlaybackCanvas() {
+        const canvas = $("mcPlaybackCanvas");
+        if (!canvas || canvas.offsetParent === null || !appState.lastSim) return;
+        const sample = getSelectedSample();
+        if (!sample || !sample.log) return;
+
+        const cfg = appState.lastSim.cfg;
+        const isEval = appState.pbPhase === "eval";
+        const isIntraday = (isEval ? cfg.evalDDType : cfg.fundedDDType) === "intraday";
+        const log = sample.log;
+        const maxIdx = Math.min(appState.pbStep, log.length - 1);
+
+        const { ctx, w, h } = prepCanvas(canvas, 330);
+
+        // Axis bounds
+        let minY = -(isEval ? cfg.evalDD : cfg.fundedDD) * 1.1;
+        let maxY = (isEval ? cfg.evalTarget : cfg.firstPayoutReq) * 1.15;
+        for (let i = 0; i < log.length; i++) {
+          const prevEq = i > 0 ? log[i - 1].eq : 0;
+          const top = Math.max(log[i].eq, prevEq + (log[i].mfe || 0));
+          if (top > maxY) maxY = top * 1.06;
+          if (log[i].eq < minY) minY = log[i].eq * 1.06;
+          if (log[i].fl < minY) minY = log[i].fl * 1.06;
+        }
+        const totalSteps = Math.max(8, log.length - 1);
+
+        const padL = 64, padR = 20, padT = 20, padB = 30;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const xOf = (i) => padL + (i / totalSteps) * plotW;
+        const yOf = (y) => padT + (1 - (y - minY) / Math.max(1, maxY - minY)) * plotH;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Gridlines
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.1)";
+        ctx.fillStyle = "#64748b";
+        ctx.font = "11px ui-monospace, Menlo, monospace";
+        for (let g = 0; g <= 5; g++) {
+          const val = minY + ((maxY - minY) * g) / 5;
+          const py = yOf(val);
+          ctx.beginPath();
+          ctx.moveTo(padL, py);
+          ctx.lineTo(w - padR, py);
+          ctx.stroke();
+          ctx.textAlign = "right";
+          ctx.fillText(fmtMoney(val, true), padL - 8, py + 4);
+        }
+
+        // $0 Reference Line
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.28)";
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padL, yOf(0));
+        ctx.lineTo(w - padR, yOf(0));
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Profit Target / Payout Threshold Line
+        const tgtVal = isEval ? cfg.evalTarget : cfg.firstPayoutReq;
+        const yTgt = yOf(tgtVal);
+        ctx.strokeStyle = "rgba(16, 185, 129, 0.48)";
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padL, yTgt);
+        ctx.lineTo(w - padR, yTgt);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#10b981";
+        ctx.textAlign = "left";
+        ctx.fillText((isEval ? "Eval Target " : "1st Payout Threshold ") + fmtMoney(tgtVal), padL + 6, Math.max(padT + 12, yTgt - 6));
+
+        // Safety Net Line (Funded)
+        if (!isEval && cfg.safetyNet > 0) {
+          const ySN = yOf(cfg.safetyNet);
+          ctx.strokeStyle = "rgba(6, 182, 212, 0.35)";
+          ctx.setLineDash([3, 4]);
+          ctx.beginPath();
+          ctx.moveTo(padL, ySN);
+          ctx.lineTo(w - padR, ySN);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#06b6d4";
+          ctx.fillText("Safety Net Lock " + fmtMoney(cfg.safetyNet), padL + 6, ySN - 5);
+        }
+
+        // Intraday Open-Trade MFE Wicks (Amber Spikes)
+        if (isIntraday) {
+          for (let i = 1; i <= maxIdx; i++) {
+            const pt = log[i];
+            if (pt.mfe > 10 && !pt.payout) {
+              const prevEq = log[i - 1].eq;
+              const wickPeak = prevEq + pt.mfe;
+              const px = xOf(i);
+              ctx.strokeStyle = "rgba(245, 158, 11, 0.72)";
+              ctx.lineWidth = 2.4;
+              ctx.beginPath();
+              ctx.moveTo(px, yOf(Math.max(prevEq, pt.eq)));
+              ctx.lineTo(px, yOf(wickPeak));
+              ctx.stroke();
+
+              // Small amber cap tick at wick high
+              ctx.beginPath();
+              ctx.moveTo(px - 3, yOf(wickPeak));
+              ctx.lineTo(px + 3, yOf(wickPeak));
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Trailing Drawdown Floor (Stepped Line: Rose while active, Bright Emerald once locked!)
+        for (let i = 1; i <= maxIdx; i++) {
+          const prev = log[i - 1];
+          const cur = log[i];
+          ctx.strokeStyle = cur.locked ? "#10b981" : "#f43f5e";
+          ctx.lineWidth = cur.locked ? 2.4 : 2.1;
+          ctx.setLineDash(cur.locked ? [] : [5, 3]);
+          ctx.beginPath();
+          ctx.moveTo(xOf(i - 1), yOf(prev.fl));
+          ctx.lineTo(xOf(i), yOf(prev.fl));
+          ctx.lineTo(xOf(i), yOf(cur.fl));
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        // Closed Equity Curve (Cyan / Emerald)
+        ctx.strokeStyle = "#06b6d4";
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        for (let i = 0; i <= maxIdx; i++) {
+          const px = xOf(i);
+          const py = yOf(log[i].eq);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        // Payout markers
+        for (let i = 1; i <= maxIdx; i++) {
+          if (log[i].payout) {
+            ctx.fillStyle = "#10b981";
+            ctx.beginPath();
+            ctx.arc(xOf(i), yOf(log[i].eq), 5.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#060a12";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+
+        // Active Head Dot
+        const curPt = log[maxIdx];
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(xOf(maxIdx), yOf(curPt.eq), 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // X-axis label
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "center";
+        ctx.fillText(`Step ${maxIdx} of ${log.length - 1} (${isIntraday ? "Intraday Unrealized" : "End-of-Day"} Trailing)`, padL + plotW / 2, h - 8);
+
+        // Header stats readout
+        const cushion = curPt.eq - curPt.fl;
+        const outcomeStr = isEval
+          ? (sample.passed ? `<span class="text-emerald">PASSED</span>` : `<span class="text-rose">BUSTED</span>`)
+          : (sample.payouts > 0 ? `<span class="text-emerald">${sample.payouts} PAYOUT${sample.payouts > 1 ? "S" : ""} (${fmtMoney(sample.totalCash)})</span>` : `<span class="text-rose">BUSTED</span>`);
+        $("pbHeaderStats").innerHTML = `Path #${appState.pbPathIdx + 1} (${outcomeStr}) | Trade ${curPt.t} | Buffer: <strong class="${cushion > 500 ? "text-emerald" : "text-rose"}">${fmtMoney(cushion)}</strong>${curPt.locked ? ' <span class="text-emerald">[LOCKED]</span>' : ""}`;
+      }
+
+      function renderTradeLog() {
+        const sample = getSelectedSample();
+        const body = $("tradeLogBody");
+        if (!sample || !sample.log) {
+          body.innerHTML = "";
+          return;
+        }
+        const log = sample.log;
+        const maxIdx = Math.min(appState.pbStep, log.length - 1);
+        const start = Math.max(0, maxIdx - 35);
+        const slice = log.slice(start, maxIdx + 1).reverse();
+
+        $("logSummaryBadge").textContent = `Showing latest ${slice.length} of ${log.length - 1} events`;
+
+        body.innerHTML = slice.map((pt, idx) => {
+          const isHead = idx === 0;
+          const resCls = pt.res.includes("WIN") || pt.res.includes("PAYOUT") ? "text-emerald"
+            : (pt.res.includes("BE") ? "text-cyan" : (pt.res.includes("LOSS") ? "text-rose" : "text-secondary"));
+          const buf = pt.eq - pt.fl;
+          return `
+            <tr class="${isHead ? "active-row" : ""}">
+              <td class="mono">${pt.t}</td>
+              <td class="mono text-muted">D${pt.day}</td>
+              <td class="${resCls}" style="font-weight:700;">${pt.res}</td>
+              <td class="num text-amber">${pt.mfe > 0 ? "+" + fmtMoney(pt.mfe) : "—"}</td>
+              <td class="num ${pt.pnl >= 0 ? "text-emerald" : "text-rose"}">${pt.t === 0 ? "—" : fmtMoney(pt.pnl, true)}</td>
+              <td class="num">${fmtMoney(pt.eq, true)}</td>
+              <td class="num ${pt.locked ? "text-emerald" : "text-rose"}">${fmtMoney(pt.fl, true)}${pt.locked ? " &#128274;" : ""}</td>
+              <td class="num ${buf > 400 ? "text-cyan" : "text-rose"}">${fmtMoney(buf)}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function drawSpaghettiCanvas() {
+        const canvas = $("mcPlaybackCanvas");
+        if (!canvas || canvas.offsetParent === null || !appState.lastSim) return;
+        const isEval = appState.pbPhase === "eval";
+        const samples = isEval ? appState.evalSamples : appState.fundedSamples;
+        const cfg = appState.lastSim.cfg;
+        if (!samples || !samples.length) return;
+
+        const { ctx, w, h } = prepCanvas(canvas, 330);
+        let maxT = 12;
+        let minY = -(isEval ? cfg.evalDD : cfg.fundedDD) * 1.05;
+        let maxY = (isEval ? cfg.evalTarget : cfg.firstPayoutReq) * 1.15;
+
+        samples.forEach((s) => {
+          if (!s.log) return;
+          if (s.log.length > maxT) maxT = s.log.length;
+          s.log.forEach((p) => {
+            if (p.eq > maxY) maxY = p.eq;
+            if (p.eq < minY) minY = p.eq;
+          });
+        });
+        maxT = Math.min(maxT, 110);
+
+        const padL = 64, padR = 20, padT = 20, padB = 30;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const xOf = (i) => padL + (Math.min(i, maxT) / Math.max(1, maxT)) * plotW;
+        const yOf = (y) => padT + (1 - (y - minY) / Math.max(1, maxY - minY)) * plotH;
+
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.1)";
+        ctx.fillStyle = "#64748b";
+        ctx.font = "11px ui-monospace, Menlo, monospace";
+        for (let g = 0; g <= 5; g++) {
+          const val = minY + ((maxY - minY) * g) / 5;
+          const py = yOf(val);
+          ctx.beginPath();
+          ctx.moveTo(padL, py);
+          ctx.lineTo(w - padR, py);
+          ctx.stroke();
+          ctx.textAlign = "right";
+          ctx.fillText(fmtMoney(val, true), padL - 8, py + 4);
+        }
+
+        // Draw 40 Monte Carlo paths
+        samples.forEach((s) => {
+          const pts = s.log;
+          if (!pts || pts.length < 2) return;
+          const good = isEval ? s.passed : s.payouts >= 1;
+          ctx.strokeStyle = good ? "rgba(16, 185, 129, 0.42)" : "rgba(244, 63, 94, 0.25)";
+          ctx.lineWidth = good ? 1.6 : 1.1;
+          ctx.beginPath();
+          for (let i = 0; i < pts.length; i++) {
+            const px = xOf(i);
+            const py = yOf(pts[i].eq);
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+        });
+
+        // Target reference line
+        const tgtVal = isEval ? cfg.evalTarget : cfg.firstPayoutReq;
+        ctx.strokeStyle = "#10b981";
+        ctx.setLineDash([5, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(padL, yOf(tgtVal));
+        ctx.lineTo(w - padR, yOf(tgtVal));
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.textAlign = "center";
+        ctx.fillText("40-Path Monte Carlo Equity Trajectories (Emerald = Pass/Paid, Rose = Busted)", padL + plotW / 2, h - 8);
+      }
+
+      function drawOutcomeHistogram() {
+        const canvas = $("outcomeHistCanvas");
+        if (!canvas || canvas.offsetParent === null || !appState.lastSim) return;
+        const { ctx, w, h } = prepCanvas(canvas, 170);
+        const { evalRes, fundedRes } = appState.lastSim;
+        const isEval = appState.pbPhase === "eval";
+
+        const bars = isEval
+          ? [
+              { label: "Busted Eval", pct: 1 - evalRes.passRate, col: "#f43f5e" },
+              { label: "Passed Eval", pct: evalRes.passRate, col: "#10b981" }
+            ]
+          : [
+              { label: "Busted ($0)", pct: 1 - fundedRes.pay1Rate, col: "#f43f5e" },
+              { label: "1 Payout Only", pct: Math.max(0, fundedRes.pay1Rate - fundedRes.pay2Rate), col: "#06b6d4" },
+              { label: "2+ Payouts", pct: fundedRes.pay2Rate, col: "#10b981" }
+            ];
+
+        ctx.clearRect(0, 0, w, h);
+        const padL = 20, padR = 20, padT = 26, padB = 30;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const slotW = plotW / bars.length;
+
+        bars.forEach((b, i) => {
+          const bw = Math.min(95, slotW * 0.55);
+          const cx = padL + slotW * (i + 0.5);
+          const bh = Math.max(4, b.pct * plotH);
+          ctx.fillStyle = b.col;
+          ctx.fillRect(cx - bw / 2, padT + plotH - bh, bw, bh);
+
+          ctx.fillStyle = "#f1f5f9";
+          ctx.font = "700 12px ui-monospace, Menlo, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(fmtPct(b.pct, 1), cx, padT + plotH - bh - 7);
+
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "600 11px -apple-system, Inter, sans-serif";
+          ctx.fillText(b.label, cx, padT + plotH + 18);
+        });
+      }
+
+      function stopPlayback() {
+        if (appState.pbTimer) {
+          clearInterval(appState.pbTimer);
+          appState.pbTimer = null;
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 13. TAB 4: COPY TRADING VS. INDEPENDENT STRESS TEST (1,600 CAMPAIGNS)
+      // -----------------------------------------------------------------------
+      function runCopyStressTest(showConfirm = false) {
+        const cfg = getConfig();
+        const N = Math.max(2, Math.min(10, parseInt($("copyNumAccts").value, 10) || 3));
+        const sizedDown = Math.max(50, parseFloat($("copySizedDown").value) || 200);
+        const bankroll = Math.max(100, parseFloat($("copyBankroll").value) || 1000);
+        $("copyNVal").textContent = `${N} Accts`;
+
+        const CAMPAIGNS = 1600;
+        const POOL = 900;
+        const rand = mulberry32(appState.seed + 9001);
+
+        // Build realistic single-cycle outcome pools (eval attempts until funded -> funded lifecycle)
+        const pMain = effectiveWinRate(cfg, cfg.baseRR, true);
+        const sampleOneAccountCycle = (evalR, fundR) => {
+          let fees = 0;
+          let tries = 0;
+          while (tries < 60) {
+            tries++;
+            fees += cfg.evalFee;
+            const er = simulateEvalPath(cfg, evalR, cfg.baseRR, pMain, rand, false);
+            if (er.passed) {
+              fees += cfg.activationFee;
+              const fr = simulateFundedPath(cfg, fundR, cfg.baseRR, pMain, rand, false);
+              return { net: fr.totalCash - fees, cash: fr.totalCash, fees, paid: fr.payouts > 0 ? 1 : 0 };
+            }
+          }
+          return { net: -fees, cash: 0, fees, paid: 0 };
+        };
+
+        const optPool = [];
+        const lowPool = [];
+        for (let i = 0; i < POOL; i++) {
+          optPool.push(sampleOneAccountCycle(cfg.evalRisk, cfg.fundedRisk));
+          lowPool.push(sampleOneAccountCycle(sizedDown, sizedDown));
+        }
+
+        const evalStrategy = (mode) => {
+          const nets = new Float64Array(CAMPAIGNS);
+          const feeBurns = new Float64Array(CAMPAIGNS);
+          let sumNet = 0;
+          let zeroPayCnt = 0;
+          let wipeoutCnt = 0;
+
+          for (let c = 0; c < CAMPAIGNS; c++) {
+            let totNet = 0;
+            let totCash = 0;
+            let totFees = 0;
+
+            if (mode === "independent") {
+              for (let a = 0; a < N; a++) {
+                const p = optPool[Math.floor(rand() * POOL)];
+                totNet += p.net;
+                totCash += p.cash;
+                totFees += p.fees;
+              }
+            } else if (mode === "copyFull") {
+              const p = optPool[Math.floor(rand() * POOL)];
+              totNet = p.net * N;
+              totCash = p.cash * N;
+              totFees = p.fees * N;
+            } else {
+              const p = lowPool[Math.floor(rand() * POOL)];
+              totNet = p.net * N;
+              totCash = p.cash * N;
+              totFees = p.fees * N;
+            }
+
+            nets[c] = totNet;
+            feeBurns[c] = totFees;
+            sumNet += totNet;
+            if (totCash <= 0.01) zeroPayCnt++;
+            // Wipeout if worst upfront fee burn (or negative net) exceeds dedicated bankroll budget
+            if (totFees > bankroll || totNet < -bankroll) wipeoutCnt++;
+          }
+
+          const sortedNets = Array.from(nets).sort((a, b) => a - b);
+          const sortedFees = Array.from(feeBurns).sort((a, b) => a - b);
+          return {
+            nets: sortedNets,
+            mean: sumNet / CAMPAIGNS,
+            median: sortedNets[Math.floor(CAMPAIGNS * 0.5)],
+            zeroPayRate: zeroPayCnt / CAMPAIGNS,
+            wipeoutRate: wipeoutCnt / CAMPAIGNS,
+            recBankroll: sortedFees[Math.floor(CAMPAIGNS * 0.95)]
+          };
+        };
+
+        const lowRes = evalStrategy("copyLow");
+        const fullRes = evalStrategy("copyFull");
+        const indRes = evalStrategy("independent");
+
+        appState.lastCopy = { lowRes, fullRes, indRes, N, sizedDown, bankroll, fundedRisk: cfg.fundedRisk };
+
+        $("scLowTag").textContent = `${fmtMoney(sizedDown)} × ${N} (100% Corr)`;
+        $("scFullTag").textContent = `${fmtMoney(cfg.fundedRisk)} × ${N} (100% Corr)`;
+        $("scIndTag").textContent = `${fmtMoney(cfg.fundedRisk)} × ${N} (Uncorr)`;
+
+        const renderRows = (r) => `
+          <div class="strat-row"><span class="text-secondary">Mean Net Profit</span><strong class="mono ${r.mean >= 0 ? "text-emerald" : "text-rose"}">${fmtMoney(r.mean, true)}</strong></div>
+          <div class="strat-row"><span class="text-secondary">Median Profit</span><strong class="mono ${r.median >= 0 ? "text-emerald" : "text-rose"}">${fmtMoney(r.median, true)}</strong></div>
+          <div class="strat-row"><span class="text-secondary">Zero-Payout Risk ($0)</span><strong class="mono ${r.zeroPayRate > 0.45 ? "text-rose" : "text-emerald"}">${fmtPct(r.zeroPayRate, 1)}</strong></div>
+          <div class="strat-row"><span class="text-secondary">Total Wipeout (>${fmtMoney(bankroll)})</span><strong class="mono ${r.wipeoutRate > 0.2 ? "text-rose" : "text-cyan"}">${fmtPct(r.wipeoutRate, 1)}</strong></div>
+          <div class="strat-row"><span class="text-secondary">Rec. Bankroll (95%)</span><strong class="mono text-amber">${fmtMoney(r.recBankroll)}</strong></div>
+        `;
+        $("scLowMetrics").innerHTML = renderRows(lowRes);
+        $("scFullMetrics").innerHTML = renderRows(fullRes);
+        $("scIndMetrics").innerHTML = renderRows(indRes);
+
+        drawCopyDistributionCanvas();
+        if (showConfirm) toast(`Completed 1,600 multi-account campaigns (${N} accounts)`);
+      }
+
+      function drawCopyDistributionCanvas() {
+        const canvas = $("copyDistCanvas");
+        if (!canvas || canvas.offsetParent === null || !appState.lastCopy) return;
+        const { lowRes, fullRes, indRes } = appState.lastCopy;
+        const { ctx, w, h } = prepCanvas(canvas, 290);
+
+        const len = indRes.nets.length;
+        const minX = Math.min(lowRes.nets[16], fullRes.nets[16], indRes.nets[16], -400);
+        const maxX = Math.max(lowRes.nets[len - 16], fullRes.nets[len - 16], indRes.nets[len - 16], 1000);
+        const BINS = 26;
+        const step = (maxX - minX) / BINS || 1;
+
+        const hist = (arr) => {
+          const b = new Array(BINS).fill(0);
+          for (const v of arr) {
+            const idx = Math.max(0, Math.min(BINS - 1, Math.floor((v - minX) / step)));
+            b[idx]++;
+          }
+          return b.map((c) => c / arr.length);
+        };
+
+        const hLow = hist(lowRes.nets);
+        const hFull = hist(fullRes.nets);
+        const hInd = hist(indRes.nets);
+        const maxFreq = Math.max(...hLow, ...hFull, ...hInd, 0.08);
+
+        const padL = 48, padR = 18, padT = 22, padB = 34;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const xOf = (val) => padL + ((val - minX) / (maxX - minX)) * plotW;
+        const yOf = (freq) => padT + (1 - freq / (maxFreq * 1.12)) * plotH;
+
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.1)";
+        for (let g = 0; g <= 4; g++) {
+          const py = padT + (plotH * g) / 4;
+          ctx.beginPath();
+          ctx.moveTo(padL, py);
+          ctx.lineTo(w - padR, py);
+          ctx.stroke();
+        }
+
+        const drawPoly = (bins, stroke, fill) => {
+          const bw = plotW / BINS;
+          ctx.beginPath();
+          ctx.moveTo(padL, padT + plotH);
+          for (let i = 0; i < BINS; i++) {
+            ctx.lineTo(padL + (i + 0.5) * bw, yOf(bins[i]));
+          }
+          ctx.lineTo(padL + plotW, padT + plotH);
+          ctx.closePath();
+          ctx.fillStyle = fill;
+          ctx.fill();
+
+          ctx.beginPath();
+          for (let i = 0; i < BINS; i++) {
+            const cx = padL + (i + 0.5) * bw;
+            const cy = yOf(bins[i]);
+            if (i === 0) ctx.moveTo(cx, cy);
+            else ctx.lineTo(cx, cy);
+          }
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+        };
+
+        drawPoly(hLow, "#f59e0b", "rgba(245, 158, 11, 0.13)");
+        drawPoly(hFull, "#f43f5e", "rgba(244, 63, 94, 0.13)");
+        drawPoly(hInd, "#10b981", "rgba(16, 185, 129, 0.22)");
+
+        // $0 Breakeven Line
+        if (minX < 0 && maxX > 0) {
+          const zx = xOf(0);
+          ctx.strokeStyle = "rgba(241, 245, 249, 0.55)";
+          ctx.setLineDash([4, 4]);
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(zx, padT);
+          ctx.lineTo(zx, padT + plotH);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "11px ui-monospace, Menlo, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("$0 BE", zx, padT - 6);
+        }
+
+        // X-axis ticks
+        ctx.fillStyle = "#64748b";
+        ctx.font = "11px ui-monospace, Menlo, monospace";
+        for (let i = 0; i <= 5; i++) {
+          const val = minX + ((maxX - minX) * i) / 5;
+          ctx.textAlign = i === 0 ? "left" : i === 5 ? "right" : "center";
+          ctx.fillText(fmtMoney(val, true), xOf(val), h - 10);
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 14. TAB 5: SEARCHABLE GLOSSARY
+      // -----------------------------------------------------------------------
+      function renderGlossary(query = "") {
+        const q = query.trim().toLowerCase();
+        const filtered = GLOSSARY_ITEMS.filter((item) =>
+          !q || item.term.toLowerCase().includes(q) || item.cat.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q)
+        );
+        $("glossaryBody").innerHTML = filtered.length
+          ? filtered.map((it) => `
+              <tr>
+                <td><strong style="color:#f1f5f9;">${it.term}</strong></td>
+                <td><span class="mono text-cyan" style="font-size:0.71rem;">${it.cat}</span></td>
+                <td style="color:#cbd5e1; line-height:1.45;">${it.desc}</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="3" class="text-muted" style="text-align:center; padding:16px;">No matching glossary terms found.</td></tr>`;
+      }
+
+      // -----------------------------------------------------------------------
+      // 15. VIEWPORT-AWARE TOOLTIP ENGINE (DESKTOP HOVER + MOBILE TAP)
+      // -----------------------------------------------------------------------
+      let activeTipBtn = null;
+
+      function showTooltipForElement(el, title, body, example) {
+        const tt = $("globalTooltip");
+        $("ttTitle").textContent = title || "";
+        $("ttBody").textContent = body || "";
+        if (example) {
+          $("ttExample").textContent = example;
+          $("ttExample").style.display = "block";
+        } else {
+          $("ttExample").style.display = "none";
+        }
+
+        tt.style.left = "-9999px";
+        tt.style.top = "-9999px";
+        tt.classList.add("visible");
+        tt.setAttribute("aria-hidden", "false");
+
+        const rect = el.getBoundingClientRect();
+        const ttW = tt.offsetWidth;
+        const ttH = tt.offsetHeight;
+        const pad = 10;
+
+        // Prefer above element; flip below if not enough room
+        let top = rect.top - ttH - 9;
+        if (top < pad) {
+          top = rect.bottom + 9;
+        }
+        if (top + ttH > window.innerHeight - pad) {
+          top = Math.max(pad, window.innerHeight - ttH - pad);
+        }
+
+        // Center horizontally on element, clamped cleanly inside viewport
+        let left = rect.left + rect.width / 2 - ttW / 2;
+        left = Math.max(pad, Math.min(window.innerWidth - ttW - pad, left));
+
+        tt.style.left = left + "px";
+        tt.style.top = top + "px";
+      }
+
+      function hideTooltip() {
+        const tt = $("globalTooltip");
+        tt.classList.remove("visible");
+        tt.setAttribute("aria-hidden", "true");
+        if (activeTipBtn) {
+          activeTipBtn.classList.remove("active");
+          activeTipBtn = null;
+        }
+      }
+
+      function initTooltips() {
+        document.querySelectorAll(".tip-btn").forEach((btn) => {
+          const open = () => {
+            if (activeTipBtn && activeTipBtn !== btn) activeTipBtn.classList.remove("active");
+            activeTipBtn = btn;
+            btn.classList.add("active");
+            showTooltipForElement(btn, btn.dataset.tipTitle, btn.dataset.tip, btn.dataset.tipEx);
+          };
+
+          btn.addEventListener("mouseenter", open);
+          btn.addEventListener("focus", open);
+          btn.addEventListener("mouseleave", hideTooltip);
+          btn.addEventListener("blur", hideTooltip);
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (activeTipBtn === btn && $("globalTooltip").classList.contains("visible")) {
+              hideTooltip();
+            } else {
+              open();
+            }
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".tip-btn")) hideTooltip();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") hideTooltip();
+        });
+        window.addEventListener("scroll", hideTooltip, true);
+      }
+
+      // -----------------------------------------------------------------------
+      // 16. TAB SWITCHING & UI EVENT WIRING
+      // -----------------------------------------------------------------------
+      function switchTab(tabId) {
+        appState.activeTab = tabId;
+        document.querySelectorAll(".ws-tab").forEach((b) => {
+          b.classList.toggle("active", b.dataset.tab === tabId);
+        });
+        document.querySelectorAll(".tab-pane").forEach((p) => {
+          p.classList.toggle("active", p.id === tabId);
+        });
+
+        // Redraw canvases once visible so layout measurements are exact
+        requestAnimationFrame(() => {
+          if (tabId === "tabOverview" && appState.lastSim) {
+            drawLifecycleFunnel(appState.lastSim);
+            drawCostVsPayouts(appState.lastSim);
+          } else if (tabId === "tabPlayback") {
+            renderPlaybackView();
+          } else if (tabId === "tabCopy") {
+            drawCopyDistributionCanvas();
+          }
+        });
+      }
+
+      let debounceHandle = null;
+      function scheduleRecalc(delay = 140) {
+        clearTimeout(debounceHandle);
+        debounceHandle = setTimeout(() => {
+          try {
+            runAllAnalytics(false);
+          } catch (err) {
+            console.error("Simulation error:", err);
+            toast("Error recalculating — check numeric inputs", "err");
+          }
+        }, delay);
+      }
+
+      function wireEvents() {
+        // Collapsible Sidebar
+        $("sidebarToggleBtn").addEventListener("click", () => {
+          $("appLayout").classList.toggle("sidebar-collapsed");
+          setTimeout(() => switchTab(appState.activeTab), 220);
+        });
+
+        // Accordions
+        document.querySelectorAll(".acc-header").forEach((hdr) => {
+          hdr.addEventListener("click", () => {
+            hdr.parentElement.classList.toggle("open");
+          });
+        });
+
+        // Preset Pills
+        document.querySelectorAll(".preset-pill").forEach((pill) => {
+          pill.addEventListener("click", () => {
+            document.querySelectorAll(".preset-pill").forEach((p) => p.classList.remove("active"));
+            pill.classList.add("active");
+            const key = pill.dataset.preset;
+            applyPreset(key);
+            stopPlayback();
+            appState.pbStep = 9999;
+            runAllAnalytics(false);
+            toast("Loaded preset: " + PRESETS[key].name);
+          });
+        });
+
+        // Header Guide & Run Buttons
+        $("openGuideBtn").addEventListener("click", () => switchTab("tabGuide"));
+        $("runSimBtn").addEventListener("click", () => {
+          appState.seed = Math.floor(Math.random() * 900000000) + 100000;
+          stopPlayback();
+          appState.pbStep = 9999;
+          runAllAnalytics(true);
+        });
+
+        // Workspace Tabs
+        document.querySelectorAll(".ws-tab").forEach((btn) => {
+          btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+        });
+
+        // Live sidebar input listeners
+        document.querySelectorAll("#sidebar input, #sidebar select").forEach((el) => {
+          el.addEventListener("input", () => {
+            syncSidebarReadouts();
+            scheduleRecalc(150);
+          });
+          el.addEventListener("change", () => {
+            syncSidebarReadouts();
+            scheduleRecalc(60);
+          });
+        });
+
+        // Tab 2: Optimizer controls
+        document.querySelectorAll("[data-opt-phase]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.querySelectorAll("[data-opt-phase]").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            appState.optPhase = btn.dataset.optPhase;
+            renderHeatmapTable();
+          });
+        });
+        $("constExpToggle").addEventListener("change", () => runOptimizerGrid());
+        $("applyOptimalBtn").addEventListener("click", () => {
+          if (!appState.lastOpt) return;
+          const { bestEval, bestFunded, constExp, cfg } = appState.lastOpt;
+          $("evalRisk").value = bestEval.risk;
+          $("fundedRisk").value = bestFunded.risk;
+          $("baseRR").value = bestFunded.rr;
+          if (constExp && Math.abs(bestFunded.rr - cfg.baseRR) > 0.01) {
+            const pNew = effectiveWinRate(cfg, bestFunded.rr, true);
+            $("winRate").value = (pNew * 100).toFixed(1);
+          }
+          runAllAnalytics(false);
+          toast(`Applied Optimal: Eval ${fmtMoney(bestEval.risk)} | Funded ${fmtMoney(bestFunded.risk)} @ ${bestFunded.rr}R`);
+        });
+
+        // Tab 3: Playback & Quick A/B Toggles
+        $("qcDDTypeBtn").addEventListener("click", () => {
+          const cur = $("fundedDDType").value;
+          const next = cur === "intraday" ? "eod" : "intraday";
+          $("fundedDDType").value = next;
+          $("evalDDType").value = next;
+          stopPlayback();
+          appState.pbStep = 9999;
+          runAllAnalytics(false);
+          toast(`Flipped Drawdown Physics to ${next === "eod" ? "End-of-Day (EOD)" : "Intraday Unrealized"}`);
+        });
+
+        $("qcBeBtn").addEventListener("click", () => {
+          $("beTriggerToggle").checked = !$("beTriggerToggle").checked;
+          stopPlayback();
+          appState.pbStep = 9999;
+          runAllAnalytics(false);
+          toast(`Late-Stage BE Trigger ${$("beTriggerToggle").checked ? "ENABLED" : "DISABLED"}`);
+        });
+
+        document.querySelectorAll("[data-pb-view]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.querySelectorAll("[data-pb-view]").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            appState.pbView = btn.dataset.pbView;
+            stopPlayback();
+            renderPlaybackView();
+          });
+        });
+
+        document.querySelectorAll("[data-pb-phase]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.querySelectorAll("[data-pb-phase]").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            appState.pbPhase = btn.dataset.pbPhase;
+            stopPlayback();
+            appState.pbStep = 9999;
+            renderPlaybackView();
+          });
+        });
+
+        $("pbPlayBtn").addEventListener("click", () => {
+          const sample = getSelectedSample();
+          if (!sample || !sample.log || sample.log.length < 2) return;
+          stopPlayback();
+          if (appState.pbStep >= sample.log.length - 1) appState.pbStep = 0;
+          const speed = parseInt($("pbSpeedSel").value, 10) || 150;
+          appState.pbTimer = setInterval(() => {
+            appState.pbStep++;
+            if (appState.pbStep >= sample.log.length - 1) {
+              appState.pbStep = sample.log.length - 1;
+              stopPlayback();
+            }
+            renderPlaybackView();
+          }, speed);
+        });
+
+        $("pbPauseBtn").addEventListener("click", () => stopPlayback());
+
+        $("pbStepBtn").addEventListener("click", () => {
+          stopPlayback();
+          const sample = getSelectedSample();
+          if (!sample || !sample.log) return;
+          if (appState.pbStep >= sample.log.length - 1) appState.pbStep = 0;
+          else appState.pbStep++;
+          renderPlaybackView();
+        });
+
+        $("pbNewPathBtn").addEventListener("click", () => {
+          stopPlayback();
+          appState.pbPathIdx = (appState.pbPathIdx + 1) % 40;
+          appState.pbStep = 9999;
+          renderPlaybackView();
+        });
+
+        // Tab 4: Copy Stress Test Controls
+        $("copyNumAccts").addEventListener("input", () => {
+          $("copyNVal").textContent = $("copyNumAccts").value + " Accts";
+        });
+        $("runCopyStressBtn").addEventListener("click", () => runCopyStressTest(true));
+
+        // Tab 5: Glossary Search
+        $("glossarySearchInput").addEventListener("input", (e) => renderGlossary(e.target.value));
+
+        // Responsive Canvas Redraw
+        let rTimer = null;
+        window.addEventListener("resize", () => {
+          clearTimeout(rTimer);
+          rTimer = setTimeout(() => {
+            if (appState.activeTab === "tabOverview" && appState.lastSim) {
+              drawLifecycleFunnel(appState.lastSim);
+              drawCostVsPayouts(appState.lastSim);
+            } else if (appState.activeTab === "tabPlayback") {
+              renderPlaybackView();
+            } else if (appState.activeTab === "tabCopy") {
+              drawCopyDistributionCanvas();
+            }
+          }, 100);
+        });
+      }
+
+      // -----------------------------------------------------------------------
+      // 17. BOOTSTRAP
+      // -----------------------------------------------------------------------
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          applyPreset("apexLegacy");
+          renderGlossary("");
+          initTooltips();
+          wireEvents();
+          runAllAnalytics(false);
+        } catch (err) {
+          console.error("PropEdge Quant initialization error:", err);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
