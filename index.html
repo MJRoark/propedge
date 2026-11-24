@@ -289,7 +289,7 @@
       max-height: calc(100vh - var(--header-h));
       position: sticky;
       top: var(--header-h);
-      padding: 14px;
+      padding: 14px 14px 36px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -317,6 +317,7 @@
        SIDEBAR ACCORDIONS & FORM CONTROLS
        ========================================================================= */
     .accordion {
+      flex: 0 0 auto;
       background: rgba(8, 14, 26, 0.65);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
@@ -356,7 +357,7 @@
 
     .acc-body {
       display: none;
-      padding: 12px;
+      padding: 12px 12px 16px;
       border-top: 1px solid var(--border-subtle);
     }
     .accordion.open .acc-body { display: block; }
@@ -946,6 +947,25 @@
       border-color: rgba(244, 63, 94, 0.4);
       color: #fda4af;
       cursor: not-allowed;
+    }
+    .hm-cell.intraday-trap {
+      box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.8);
+    }
+    .hm-trap-badge {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      font-family: var(--font-mono);
+      font-size: 0.53rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      padding: 0 3px;
+      border-radius: 3px;
+      background: rgba(245, 158, 11, 0.22);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      line-height: 1.3;
+      pointer-events: none;
     }
     .hm-v {
       font-family: var(--font-mono);
@@ -1597,7 +1617,7 @@
             <div class="field">
               <div class="field-label">
                 <span class="label-text">Eval Risk / Trade
-                  <button type="button" class="tip-btn" data-tip-title="Evaluation Dollar Risk ($)" data-tip="Fixed dollar stop loss per trade during the evaluation phase. Larger compliant sizing reduces steps and beats trailing drawdown drag." data-tip-ex="Example: $1,000 risk at 1.5R ($1,500 target) clears a $3,000 eval in just 2 clean wins.">?</button>
+                  <button type="button" class="tip-btn" data-tip-title="Evaluation Dollar Risk ($)" data-tip="Fixed dollar stop loss per trade during the evaluation phase. Larger compliant sizing reduces steps and beats trailing drawdown drag." data-tip-ex="Example: $1,000 risk at 1.5R ($1,500 target) clears a $3,000 eval in just 2 clean wins while staying mid-trade immune on a $2,500 intraday DD.">?</button>
                 </span>
               </div>
               <div class="input-wrap">
@@ -1662,7 +1682,7 @@
             <div class="field field-full">
               <div class="field-label">
                 <span class="label-text">Open-Trade MFE Wick Volatility
-                  <button type="button" class="tip-btn" data-tip-title="Open-Trade MFE Wick Volatility" data-tip="Models how far losing trades spike into unrealized open profit (Maximum Favorable Excursion) before reversing to stop you out. Only affects Intraday Unrealized Trailing accounts." data-tip-ex="Example: 'Realistic M1 iFVG' models trades spiking +0.5R to +1.3R before reversing, ratcheting an intraday trailing floor up by hundreds of dollars on losses.">?</button>
+                  <button type="button" class="tip-btn" data-tip-title="Open-Trade MFE Wick Volatility" data-tip="Models how far trades spike into unrealized open profit (Maximum Favorable Excursion) before pulling back or stopping out. Controls both losing-trade wick drag and winning-trade intraday retest liquidations." data-tip-ex="Example: 'Realistic M1 iFVG' models trades spiking +0.5R to +1.3R before pulling back, ratcheting an intraday trailing floor up on every swing.">?</button>
                 </span>
               </div>
               <select id="mfeVolatility">
@@ -1721,6 +1741,22 @@
                 </div>
                 <label class="switch">
                   <input type="checkbox" id="compress1to1Toggle" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field field-full">
+              <div class="switch-box">
+                <div>
+                  <div class="switch-title">
+                    <span>Win-Trade Intraday Retest Risk</span>
+                    <button type="button" class="tip-btn" data-tip-title="Intra-Trade Retest Liquidation: r(R+1) > D" data-tip="Models mid-trade peak-to-trough pullback liquidations on winning setups under Intraday Unrealized Trailing DD whenever your max trade swing r(R+1) exceeds remaining drawdown buffer D. Mathematically 0% penalty whenever r(R+1) <= D." data-tip-ex="Example: On a $2,500 Intraday DD eval, $1,000 @ 1.5R ($2,500 swing) is immune, while full-sending $2,500 @ 1.2R drops pass rate from ~45% to ~30%.">?</button>
+                  </div>
+                  <div class="switch-sub">Applies r(R+1) &gt; D penalty on Intraday DD</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="winRetestToggle" checked />
                   <span class="switch-track"></span>
                 </label>
               </div>
@@ -1882,7 +1918,7 @@
             <div>
               <div class="card-title">
                 <span>JJ Simon 2D Structural Optimizer (Risk &times; R:R)</span>
-                <button type="button" class="tip-btn" data-tip-title="2D Risk × R:R Grid Optimizer" data-tip="Scans 72 combinations of Dollar Risk ($150–$1,500) and R:R (0.75R–3.0R) to isolate the mathematically optimal compliant sizing for your exact prop firm rulebook." data-tip-ex="Example: Cells violating MAE Cap or Daily Loss Limit are locked out automatically with a 🔒 icon.">?</button>
+                <button type="button" class="tip-btn" data-tip-title="2D Risk × R:R Grid Optimizer" data-tip="Scans combinations of Dollar Risk and R:R (0.75R–3.0R) to isolate the mathematically optimal compliant sizing for your exact prop firm rulebook, automatically flagging full-send intraday traps." data-tip-ex="Example: Cells violating MAE Cap or Daily Loss Limit are locked out automatically with a 🔒 icon, while r(R+1) > DD intraday retest traps display a TRAP badge.">?</button>
               </div>
               <div class="card-sub" id="optGridSub">Hover any cell for exact metrics. Click any legal cell to apply directly.</div>
             </div>
@@ -1911,6 +1947,7 @@
             <span class="text-secondary">
               <span style="color:#fde047;">&#9733;</span> Optimal Cell &nbsp;|&nbsp;
               <span style="color:var(--cyan);">--</span> Current Input &nbsp;|&nbsp;
+              <span style="color:var(--amber);font-weight:700;">TRAP</span> r(R+1) &gt; DD &nbsp;|&nbsp;
               <span style="color:var(--rose);">&#128274;</span> MAE / DLL Locked
             </span>
           </div>
@@ -2164,7 +2201,7 @@
             <div class="step-card">
               <span class="step-badge">3</span>
               <h4>Run 2D Optimizer</h4>
-              <p>Open <strong>Tab 2</strong>. Scan the Risk &times; R:R heatmap (holding your skill constant), spot MAE-locked cells, and click <strong>Apply Optimal Settings</strong> to lock in compliant peak sizing.</p>
+              <p>Open <strong>Tab 2</strong>. Scan the Risk &times; R:R heatmap (holding your skill constant), spot MAE-locked cells and intraday <span class="mono">TRAP</span> sizes, and click <strong>Apply Optimal Settings</strong>.</p>
             </div>
             <div class="step-card">
               <span class="step-badge">4</span>
@@ -2207,9 +2244,9 @@
             </div>
 
             <div class="math-card">
-              <h4>D. The Intraday Trailing Paradox</h4>
-              <div class="formula-pill">Buffer Burn on Near-TP Loss = MFE Peak (+1.4R) + Stop (&minus;1.0R) = 2.4R</div>
-              <p>On intraday unrealized trailing accounts, moving to breakeven too early (+0.5R) gets clipped during normal M1 iFVG retests, while leaving a pure set-and-forget stop exposes you to catastrophic 2.4R buffer nukes on late reversals. A <strong>Late-Stage BE Trigger (+1.15R)</strong> or <strong>1:1 Safety-Net Compression</strong> solves this until the floor locks.</p>
+              <h4>D. Intraday Mid-Trade Immunity Ceiling</h4>
+              <div class="formula-pill">r<sub>safe</sub> = D &divide; (R + 1) &nbsp;&hArr;&nbsp; r(R + 1) &le; D</div>
+              <p>On an Intraday Unrealized Trailing account, full-sending $2,500 risk for $3,000 target (1.2R) fails whenever a winning trade impulses +0.5R and retests to -0.5R. Keeping <span class="mono">r(R + 1) &le; D</span> (such as <strong>$1,000 risk @ 1.5R</strong> on a $2,500 DD) guarantees zero mid-trade liquidation even on a +1.49R to -1.0R swing.</p>
             </div>
 
             <div class="math-card" style="grid-column: 1 / -1;">
@@ -2229,7 +2266,7 @@
             </div>
           </div>
           <div class="glossary-search">
-            <input type="text" id="glossarySearchInput" placeholder="Filter glossary (e.g., MAE, MFE, consistency, safety net, breakeven, copy)..." />
+            <input type="text" id="glossarySearchInput" placeholder="Filter glossary (e.g., MAE, MFE, retest, consistency, safety net, breakeven, copy)..." />
           </div>
           <div class="glossary-table-wrap">
             <table class="quant-table">
@@ -2315,7 +2352,8 @@
           beTriggerToggle: false,
           beTriggerR: 1.15,
           beLockOffset: "0",
-          compress1to1Toggle: false
+          compress1to1Toggle: false,
+          winRetestToggle: true
         },
         apexEod: {
           name: "Apex 50K EOD (2026)",
@@ -2348,7 +2386,8 @@
           beTriggerToggle: false,
           beTriggerR: 1.15,
           beLockOffset: "0",
-          compress1to1Toggle: false
+          compress1to1Toggle: false,
+          winRetestToggle: true
         },
         topstep: {
           name: "Topstep 50K Combine/XFA (2026)",
@@ -2381,7 +2420,8 @@
           beTriggerToggle: false,
           beTriggerR: 1.15,
           beLockOffset: "0",
-          compress1to1Toggle: false
+          compress1to1Toggle: false,
+          winRetestToggle: true
         },
         mffu: {
           name: "MyFundedFutures 50K Builder (2026)",
@@ -2414,7 +2454,8 @@
           beTriggerToggle: false,
           beTriggerR: 1.15,
           beLockOffset: "0",
-          compress1to1Toggle: false
+          compress1to1Toggle: false,
+          winRetestToggle: true
         }
       };
 
@@ -2429,11 +2470,12 @@
         { term: "Constant Expectancy p(R)", cat: "Optimizer", desc: "Holds live trading edge E constant when scanning R:R targets via p(R) = (1 + E) / (R + 1), preventing unrealistic win-rate assumptions on wide targets." },
         { term: "Intraday Unrealized Trailing DD", cat: "Firm Rule", desc: "Liquidation floor trails upward based on open-trade unrealized high-water marks—meaning a trade that spikes +$600 then stops out at -$500 permanently removes $1,100 of buffer." },
         { term: "End-of-Day (EOD) Trailing DD", cat: "Firm Rule", desc: "Liquidation floor only updates once per day based on closed end-of-day balance, immunizing your account against intraday wick reversals." },
+        { term: "Win-Trade Intraday Retest Risk r(R+1) > D", cat: "Physics", desc: "Models mid-trade peak-to-trough liquidation on winning trades when max swing r(R+1) exceeds remaining Intraday DD buffer D. Zero penalty whenever r(R+1) <= D." },
         { term: "Safety Net Lock Threshold", cat: "Funded Rule", desc: "Profit threshold where the trailing floor permanently freezes (e.g., $2,600 on Apex Legacy locks floor at $50,100). Setting $0 models 50%-balance withdrawal firms like Topstep." },
         { term: "MAE Single-Trade Loss Cap", cat: "Funded Rule", desc: "Maximum Adverse Excursion cap limiting open unrealized loss on a single trade (e.g., 30% of $2,500 DD = $750 on Apex Legacy). Violating it risks payout denial." },
         { term: "Consistency Cap (%)", cat: "Firm Rule", desc: "Caps your best single day as a % of total profit. Exceeding it inflates required profit to (Best Day ÷ Consistency%). Set 0% for 1-day pass allowance." },
         { term: "Daily Loss Limit (DLL)", cat: "Firm Rule", desc: "Hard daily loss ceiling. Single-trade risks exceeding DLL are flagged/locked out; reaching DLL halts trading for the remainder of the session." },
-        { term: "Open-Trade MFE Wick Volatility", cat: "Physics", desc: "Simulates how far losing trades push into open profit before reversing on intraday trailing accounts (Low ~15% TP, Realistic M1 iFVG ~35% TP, High ~52% TP)." },
+        { term: "Open-Trade MFE Wick Volatility", cat: "Physics", desc: "Simulates how far trades push into open profit before pulling back on intraday trailing accounts (Low ~15% TP, Realistic M1 iFVG ~35% TP, High ~52% TP)." },
         { term: "Late-Stage Breakeven Trigger", cat: "Trade Mgmt", desc: "Leaves stops untouched through normal 0.5R–0.8R retests, then shifts stop to BE or +0.3R past +1.15R to prevent 2.4R intraday buffer wipeouts." },
         { term: "Early Safety-Net 1:1 Compression", cat: "Trade Mgmt", desc: "Compresses target to 1:1 R:R (with higher adjusted win rate) strictly while the funded trailing floor is unlocked, switching back to target R:R once locked." },
         { term: "Zero-Payout Risk (%)", cat: "Copy Stress", desc: "Percentage of multi-account campaigns that end with $0 withdrawn. 100% correlated copy trading dramatically inflates this compared to independent accounts." },
@@ -2532,7 +2574,8 @@
           beTriggerToggle: $("beTriggerToggle").checked,
           beTriggerR: Math.max(0.5, Math.min(2.5, n("beTriggerR", 1.15))),
           beLockOffset: parseFloat($("beLockOffset").value) || 0,
-          compress1to1Toggle: $("compress1to1Toggle").checked
+          compress1to1Toggle: $("compress1to1Toggle").checked,
+          winRetestPhysics: $("winRetestToggle").checked
         };
 
         // Derived live-market expectancy E = p * R - (1 - p)
@@ -2551,7 +2594,7 @@
           ? Math.max(0, cfg.safetyNet - cfg.fundedDD)
           : 0;
 
-        // MFE Beta-like shaping parameter for losing trade open spikes
+        // MFE Beta-like shaping parameter for open spikes
         cfg.mfeMeanFrac = cfg.mfeVolatility === "low" ? 0.15 : (cfg.mfeVolatility === "high" ? 0.52 : 0.35);
         return cfg;
       }
@@ -2579,6 +2622,7 @@
         });
         $("beTriggerToggle").checked = !!p.beTriggerToggle;
         $("compress1to1Toggle").checked = !!p.compress1to1Toggle;
+        $("winRetestToggle").checked = p.winRetestToggle !== false;
         syncSidebarReadouts();
       }
 
@@ -2614,6 +2658,33 @@
         const alpha = Math.max(0.4, (1 / meanFrac) - 1);
         const frac = Math.pow(rand(), alpha) * 0.96;
         return reward * frac;
+      }
+
+      // Exact conditional probability that a winning trade gets liquidated mid-trade
+      // by an Intraday Unrealized Trailing floor during an impulse-then-retest swing.
+      // Mathematically 0 whenever r * (R + 1) <= currentBuffer (or floor is locked).
+      function calcWinRetestKillProb(risk, reward, prevEq, peak, floor, maxDD, floorCap, mfeMeanFrac) {
+        const currentBuffer = prevEq - floor;
+        if (currentBuffer <= 0 || mfeMeanFrac <= 0.01) {
+          return { killProb: 0, startMfe: 0, floorExcess: 0 };
+        }
+        const effRisk = Math.min(risk, currentBuffer);
+        const rawMaxFloor = Math.max(peak, prevEq + reward) - maxDD;
+        const maxNewFloor = Number.isFinite(floorCap) ? Math.min(floorCap, rawMaxFloor) : rawMaxFloor;
+        const stopLevel = prevEq - effRisk;
+        const floorExcess = maxNewFloor - stopLevel;
+
+        if (floorExcess <= 1e-6) {
+          return { killProb: 0, startMfe: 0, floorExcess: 0 };
+        }
+
+        const pEodWin = risk / (risk + reward);
+        const pIntradayWin = (effRisk / currentBuffer) * Math.exp(-floorExcess / currentBuffer);
+        const baseKillProb = Math.max(0, Math.min(0.95, 1 - (pIntradayWin / pEodWin)));
+        const volScale = mfeMeanFrac / 0.35; // Realistic M1 iFVG (0.35) = 1.0x exact Brownian limit
+        const killProb = Math.max(0, Math.min(0.95, 1 - Math.pow(1 - baseKillProb, volScale)));
+        const startMfe = Math.max(0, (stopLevel + maxDD) - prevEq);
+        return { killProb, startMfe, floorExcess };
       }
 
       function simulateEvalPath(cfg, risk, rr, pWin, rand, record) {
@@ -2669,22 +2740,46 @@
             const isWin = rand() < pWin;
 
             if (isWin) {
-              if (beOn && rand() < beClipProb) {
-                mfe = beTrigAmt;
-                if (isIntraday && prevEq + mfe > peak) {
-                  peak = prevEq + mfe;
-                  floor = Math.max(floor, peak - maxDD);
+              let retestHandled = false;
+              if (isIntraday && cfg.winRetestPhysics) {
+                const retest = calcWinRetestKillProb(risk, reward, prevEq, peak, floor, maxDD, Infinity, cfg.mfeMeanFrac);
+                if (retest.killProb > 0 && rand() < retest.killProb) {
+                  const minMfe = Math.max(retest.startMfe, reward * 0.25);
+                  const maxMfe = Math.max(minMfe, reward * 0.92);
+                  mfe = minMfe + rand() * (maxMfe - minMfe);
+                  if (prevEq + mfe > peak) {
+                    peak = prevEq + mfe;
+                    floor = Math.max(floor, peak - maxDD);
+                  }
+                  if (beOn && mfe >= beTrigAmt && prevEq + beLockAmt > floor + 1e-6) {
+                    pnl = beLockAmt - comm;
+                    resTag = "BE SAVED";
+                  } else {
+                    pnl = (floor - prevEq) - comm;
+                    resTag = "RETEST BUST";
+                  }
+                  retestHandled = true;
                 }
-                pnl = beLockAmt - comm;
-                resTag = "BE CLIP";
-              } else {
-                mfe = reward;
-                if (isIntraday && prevEq + mfe > peak) {
-                  peak = prevEq + mfe;
-                  floor = Math.max(floor, peak - maxDD);
+              }
+
+              if (!retestHandled) {
+                if (beOn && rand() < beClipProb) {
+                  mfe = beTrigAmt;
+                  if (isIntraday && prevEq + mfe > peak) {
+                    peak = prevEq + mfe;
+                    floor = Math.max(floor, peak - maxDD);
+                  }
+                  pnl = beLockAmt - comm;
+                  resTag = "BE CLIP";
+                } else {
+                  mfe = reward;
+                  if (isIntraday && prevEq + mfe > peak) {
+                    peak = prevEq + mfe;
+                    floor = Math.max(floor, peak - maxDD);
+                  }
+                  pnl = reward - comm;
+                  resTag = "WIN";
                 }
-                pnl = reward - comm;
-                resTag = "WIN";
               }
             } else {
               mfe = sampleLossMfe(reward, cfg.mfeMeanFrac, rand);
@@ -2880,16 +2975,38 @@
               const isWin = rand() < activeP;
 
               if (isWin) {
-                if (beOn && !floorLocked && rand() < beClipProb) {
-                  mfe = Math.min(reward, beTrigAmt);
-                  if (isIntraday) updateFloor(prevEq + mfe);
-                  pnl = beLockAmt - comm;
-                  resTag = "BE CLIP";
-                } else {
-                  mfe = reward;
-                  if (isIntraday) updateFloor(prevEq + mfe);
-                  pnl = reward - comm;
-                  resTag = useCompressed ? "WIN (1:1)" : "WIN";
+                let retestHandled = false;
+                if (isIntraday && !floorLocked && cfg.winRetestPhysics) {
+                  const floorCap = hasSafetyLock ? lockFloor : 0;
+                  const retest = calcWinRetestKillProb(risk, reward, prevEq, peak, floor, maxDD, floorCap, cfg.mfeMeanFrac);
+                  if (retest.killProb > 0 && rand() < retest.killProb) {
+                    const minMfe = Math.max(retest.startMfe, reward * 0.25);
+                    const maxMfe = Math.max(minMfe, reward * 0.92);
+                    mfe = minMfe + rand() * (maxMfe - minMfe);
+                    updateFloor(prevEq + mfe);
+                    if (beOn && !floorLocked && mfe >= beTrigAmt && prevEq + beLockAmt > floor + 1e-6) {
+                      pnl = beLockAmt - comm;
+                      resTag = "BE SAVED";
+                    } else {
+                      pnl = (floor - prevEq) - comm;
+                      resTag = "RETEST BUST";
+                    }
+                    retestHandled = true;
+                  }
+                }
+
+                if (!retestHandled) {
+                  if (beOn && !floorLocked && rand() < beClipProb) {
+                    mfe = Math.min(reward, beTrigAmt);
+                    if (isIntraday) updateFloor(prevEq + mfe);
+                    pnl = beLockAmt - comm;
+                    resTag = "BE CLIP";
+                  } else {
+                    mfe = reward;
+                    if (isIntraday) updateFloor(prevEq + mfe);
+                    pnl = reward - comm;
+                    resTag = useCompressed ? "WIN (1:1)" : "WIN";
+                  }
                 }
               } else {
                 mfe = sampleLossMfe(reward, cfg.mfeMeanFrac, rand);
@@ -3166,6 +3283,18 @@
           });
         }
 
+        // 5b. Full-Send Intraday Retest Trap Warning: r(R+1) > D
+        const evalMaxSwing = cfg.evalRisk * (cfg.baseRR + 1);
+        if (cfg.evalDDType === "intraday" && cfg.winRetestPhysics && evalMaxSwing > cfg.evalDD + 1) {
+          const safeMaxRisk = Math.floor(cfg.evalDD / (cfg.baseRR + 1));
+          const killInfo = calcWinRetestKillProb(cfg.evalRisk, cfg.evalRisk * cfg.baseRR, 0, 0, -cfg.evalDD, cfg.evalDD, Infinity, cfg.mfeMeanFrac);
+          alerts.push({
+            type: "warn",
+            icon: "&#9888;",
+            html: `<strong>Intraday Eval Retest Trap:</strong> Max trade swing r(R+1) = <strong>${fmtMoney(evalMaxSwing)}</strong> exceeds your ${fmtMoney(cfg.evalDD)} Intraday DD (~${fmtPct(killInfo.killProb, 1)} fresh-account win liquidation risk). Max mid-trade immune risk at ${cfg.baseRR}R is <strong>${fmtMoney(safeMaxRisk)}</strong>.`
+          });
+        }
+
         // 6. All Clear
         if (alerts.length === 0) {
           alerts.push({
@@ -3266,7 +3395,7 @@
           ctx.roundRect ? ctx.roundRect(padL, barY, plotW, barH, 6) : ctx.rect(padL, barY, plotW, barH);
           ctx.fill();
 
-          // Filled bar (sqrt scaled slightly for visual clarity while showing exact % label)
+          // Filled bar
           const bw = Math.max(4, st.pct * plotW);
           ctx.fillStyle = st.col;
           ctx.beginPath();
@@ -3380,7 +3509,8 @@
       // -----------------------------------------------------------------------
       // 11. TAB 2: JJ SIMON 2D RISK x R:R OPTIMIZER HEATMAP
       // -----------------------------------------------------------------------
-      const OPT_RISKS = [150, 250, 350, 500, 650, 750, 1000, 1250, 1500];
+      const OPT_EVAL_RISKS = [250, 500, 750, 1000, 1250, 1500, 2000, 2500];
+      const OPT_FUNDED_RISKS = [150, 250, 350, 500, 650, 750, 1000, 1250, 1500];
       const OPT_RRS = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0];
 
       function runOptimizerGrid() {
@@ -3392,24 +3522,29 @@
           ? `Constant Expectancy: p(R) = (1 + ${cfg.liveExpR.toFixed(3)}) / (R + 1)`
           : `Fixed Win Rate Mode: ${cfg.winRate.toFixed(1)}% across all R:R`;
 
-        // 1. Scan Eval Grid
+        // 1. Scan Eval Grid (allows full-send up to risk === evalDD so intraday traps are visible)
         let bestEval = { risk: cfg.evalRisk, rr: cfg.baseRR, costToFund: Infinity, passRate: 0, legal: true };
         const evalGrid = [];
         for (let r = 0; r < OPT_RRS.length; r++) {
           const rr = OPT_RRS[r];
           const row = [];
-          for (let c = 0; c < OPT_RISKS.length; c++) {
-            const risk = OPT_RISKS[c];
+          for (let c = 0; c < OPT_EVAL_RISKS.length; c++) {
+            const risk = OPT_EVAL_RISKS[c];
             const violatesDll = cfg.evalDLL > 0 && risk > cfg.evalDLL;
-            const exceedsDD = risk >= cfg.evalDD;
+            const exceedsDD = risk > cfg.evalDD;
             const legal = !violatesDll && !exceedsDD;
             const lockReason = violatesDll ? `Breaches ${fmtMoney(cfg.evalDLL)} Eval DLL` : (exceedsDD ? "Exceeds Max DD" : "");
+            const maxSwing = risk * (rr + 1);
+            const isIntradayTrap = legal && cfg.evalDDType === "intraday" && cfg.winRetestPhysics && maxSwing > cfg.evalDD + 1;
+            const freshKillProb = isIntradayTrap
+              ? calcWinRetestKillProb(risk, risk * rr, 0, 0, -cfg.evalDD, cfg.evalDD, Infinity, cfg.mfeMeanFrac).killProb
+              : 0;
             let cell;
             if (!legal) {
-              cell = { risk, rr, legal: false, lockReason, passRate: 0, costToFund: Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
+              cell = { risk, rr, legal: false, lockReason, isIntradayTrap: false, freshKillProb: 0, maxSwing, passRate: 0, costToFund: Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
             } else {
               const res = runEvalBatch(cfg, risk, rr, gridRuns, r * 37 + c * 13, 0, constExp);
-              cell = { risk, rr, legal: true, lockReason: "", passRate: res.passRate, costToFund: res.costToFund, pWin: res.pWin };
+              cell = { risk, rr, legal: true, lockReason: "", isIntradayTrap, freshKillProb, maxSwing, passRate: res.passRate, costToFund: res.costToFund, pWin: res.pWin };
               if (cell.costToFund < bestEval.costToFund) bestEval = cell;
             }
             row.push(cell);
@@ -3423,15 +3558,21 @@
         for (let r = 0; r < OPT_RRS.length; r++) {
           const rr = OPT_RRS[r];
           const row = [];
-          for (let c = 0; c < OPT_RISKS.length; c++) {
-            const risk = OPT_RISKS[c];
+          for (let c = 0; c < OPT_FUNDED_RISKS.length; c++) {
+            const risk = OPT_FUNDED_RISKS[c];
             const violatesMae = cfg.maeCap > 0 && risk > cfg.maeCap;
             const exceedsDD = risk >= cfg.fundedDD;
             const legal = !violatesMae && !exceedsDD;
             const lockReason = violatesMae ? `Breaches ${fmtMoney(cfg.maeCap)} MAE Cap` : (exceedsDD ? "Exceeds Funded DD" : "");
+            const maxSwing = risk * (rr + 1);
+            const floorCap = cfg.safetyNet > 0 ? cfg.lockFloor : 0;
+            const isIntradayTrap = legal && cfg.fundedDDType === "intraday" && cfg.winRetestPhysics && maxSwing > cfg.fundedDD + 1;
+            const freshKillProb = isIntradayTrap
+              ? calcWinRetestKillProb(risk, risk * rr, 0, 0, -cfg.fundedDD, cfg.fundedDD, floorCap, cfg.mfeMeanFrac).killProb
+              : 0;
             let cell;
             if (!legal) {
-              cell = { risk, rr, legal: false, lockReason, pay1Rate: 0, expTotalCash: 0, netEv: -Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
+              cell = { risk, rr, legal: false, lockReason, isIntradayTrap: false, freshKillProb: 0, maxSwing, pay1Rate: 0, expTotalCash: 0, netEv: -Infinity, pWin: effectiveWinRate(cfg, rr, constExp) };
             } else {
               const res = runFundedBatch(cfg, risk, rr, gridRuns, r * 53 + c * 19, 0, constExp);
               const netEv = res.expTotalCash - bestEval.costToFund;
@@ -3440,6 +3581,9 @@
                 rr,
                 legal: true,
                 lockReason: "",
+                isIntradayTrap,
+                freshKillProb,
+                maxSwing,
                 pay1Rate: res.pay1Rate,
                 expTotalCash: res.expTotalCash,
                 netEv,
@@ -3461,6 +3605,7 @@
         if (!appState.lastOpt) return;
         const { evalGrid, fundedGrid, bestEval, bestFunded, cfg, constExp } = appState.lastOpt;
         const isEval = appState.optPhase === "eval";
+        const risks = isEval ? OPT_EVAL_RISKS : OPT_FUNDED_RISKS;
         const grid = isEval ? evalGrid : fundedGrid;
         const best = isEval ? bestEval : bestFunded;
 
@@ -3479,17 +3624,17 @@
         if (!Number.isFinite(minV)) { minV = -200; maxV = 200; }
 
         const tbl = $("heatmapTable");
-        tbl.style.gridTemplateColumns = `78px repeat(${OPT_RISKS.length}, minmax(60px, 1fr))`;
+        tbl.style.gridTemplateColumns = `78px repeat(${risks.length}, minmax(60px, 1fr))`;
 
         let html = `<div class="hm-hdr">R:R \\ Risk</div>`;
-        OPT_RISKS.forEach((r) => { html += `<div class="hm-hdr">${fmtMoney(r)}</div>`; });
+        risks.forEach((r) => { html += `<div class="hm-hdr">${fmtMoney(r)}</div>`; });
 
         for (let r = 0; r < OPT_RRS.length; r++) {
           const rr = OPT_RRS[r];
           const pEff = effectiveWinRate(cfg, rr, constExp);
           html += `<div class="hm-row-lbl"><span>${rr.toFixed(2).replace(/0$/, "")}R</span><small>${fmtPct(pEff, 0)} WR</small></div>`;
 
-          for (let c = 0; c < OPT_RISKS.length; c++) {
+          for (let c = 0; c < risks.length; c++) {
             const cell = grid[r][c];
             const isOpt = cell.legal && cell.risk === best.risk && cell.rr === best.rr;
             const isCur = isEval
@@ -3500,6 +3645,7 @@
             if (isOpt) cls.push("optimal");
             if (isCur) cls.push("current");
             if (!cell.legal) cls.push("locked");
+            if (cell.legal && cell.isIntradayTrap) cls.push("intraday-trap");
 
             let bg = "";
             let vTxt = "";
@@ -3521,7 +3667,9 @@
               sTxt = fmtPct(cell.pay1Rate, 0);
             }
 
+            const trapHtml = (cell.legal && cell.isIntradayTrap) ? `<span class="hm-trap-badge">TRAP</span>` : "";
             html += `<div class="${cls.join(" ")}" style="${cell.legal ? `background:${bg};` : ""}" data-r="${r}" data-c="${c}">
+              ${trapHtml}
               <span class="hm-v">${vTxt}</span>
               <span class="hm-s">${sTxt}</span>
             </div>`;
@@ -3537,16 +3685,20 @@
 
           el.addEventListener("mouseenter", () => {
             const targetAmt = cell.risk * cell.rr;
+            const ddRef = isEval ? cfg.evalDD : cfg.fundedDD;
+            const trapNote = cell.isIntradayTrap
+              ? ` ⚠ Intraday Retest Trap: r(R+1) = ${fmtMoney(cell.maxSwing)} > ${fmtMoney(ddRef)} DD (~${fmtPct(cell.freshKillProb, 1)} fresh-account win liquidation risk).`
+              : "";
             let body = "";
             let ex = "";
             if (!cell.legal) {
               body = `Rule Lockout: ${cell.lockReason}. Risking ${fmtMoney(cell.risk)} violates firm compliance.`;
               ex = "Choose a lower risk column inside legal limits.";
             } else if (isEval) {
-              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | Eval Pass Rate: ${fmtPct(cell.passRate, 1)} | Expected Cost to Funded: ${fmtMoney(cell.costToFund)}.`;
+              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | Eval Pass Rate: ${fmtPct(cell.passRate, 1)} | Expected Cost to Funded: ${fmtMoney(cell.costToFund)}.${trapNote}`;
               ex = "Click cell to apply Eval Risk & Baseline R:R.";
             } else {
-              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | 1st Payout Rate: ${fmtPct(cell.pay1Rate, 1)} | Cost to Funded: ${fmtMoney(cell.costToFund)} | Net EV: ${fmtMoney(cell.netEv, true)}.`;
+              body = `Target: ${fmtMoney(targetAmt)} | Adj. WR: ${fmtPct(cell.pWin, 1)} | 1st Payout Rate: ${fmtPct(cell.pay1Rate, 1)} | Cost to Funded: ${fmtMoney(cell.costToFund)} | Net EV: ${fmtMoney(cell.netEv, true)}.${trapNote}`;
               ex = "Click cell to apply Funded Risk & Baseline R:R.";
             }
             showTooltipForElement(el, `Risk ${fmtMoney(cell.risk)} × ${cell.rr}R`, body, ex);
@@ -3814,7 +3966,7 @@
         body.innerHTML = slice.map((pt, idx) => {
           const isHead = idx === 0;
           const resCls = pt.res.includes("WIN") || pt.res.includes("PAYOUT") ? "text-emerald"
-            : (pt.res.includes("BE") ? "text-cyan" : (pt.res.includes("LOSS") ? "text-rose" : "text-secondary"));
+            : (pt.res.includes("BE") ? "text-cyan" : (pt.res.includes("LOSS") || pt.res.includes("BUST") ? "text-rose" : "text-secondary"));
           const buf = pt.eq - pt.fl;
           return `
             <tr class="${isHead ? "active-row" : ""}">
